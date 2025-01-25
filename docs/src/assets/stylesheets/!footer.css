@@ -1,0 +1,22 @@
+footer {padding: 0 0 5rem 0;}
+
+footer p {
+  color: darkslategray;
+  font-size: 1.125rem;
+  line-height: 2rem;
+  margin: 0;
+  text-align: right;
+}
+
+footer a {
+  color: royalblue;
+  margin: 0 -.25rem;
+  padding: 0 .25rem;
+}
+
+footer a:hover {
+  background-color: aliceblue;
+  text-decoration: none;
+}
+
+footer a:first-child {float: left;}
