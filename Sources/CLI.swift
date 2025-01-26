@@ -3,10 +3,7 @@ import Foundation
 
 @main
 struct CLI: ParsableCommand {
-  static let configuration = CommandConfiguration(
-    commandName : "alternator",
-       abstract : "Alternator builds static websites.",
-        version : "2.0.0")
+  static let configuration = CommandConfiguration(commandName: "alternator", version: "2.0.0")
 
   @Argument(help:"Path to your source directory.")
   var source: String = "."
@@ -32,8 +29,8 @@ struct CLI: ParsableCommand {
     Project.build()
 
     if let port = port {
-      Project.source!.watch() {(_, _, count, paths, _, _) in
-        guard !Watcher.parseEvents(count, paths)
+      Project.source!.watch() {urls in
+        guard !urls
           .filter({guard Project.sourceContainsTarget else {return true}
             return !$0.absoluteString.contains(Project.target!.absoluteString)})
           .isEmpty
@@ -45,12 +42,9 @@ struct CLI: ParsableCommand {
 
       Project.target!.serve(port:port) {(request, response, error) in
         var message:[String] = ["[serve]"]
-        if let request
-          {message.append(request.path)}
-        if let response
-          {message.append("(\(response.status.rawValue) \(response.status))")}
-        if let error
-          {message.append("Error: \(error)")}
+        if let request  {message.append(request.path)}
+        if let response {message.append("(\(response.status.rawValue) \(response.status))")}
+        if let error    {message.append("Error: \(error)")}
         print(message.joined(separator:" "), to:&FileHandle.stderr)
       }
 

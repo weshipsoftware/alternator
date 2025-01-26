@@ -1,28 +1,29 @@
 import Foundation
 
 class Watcher {
-  @discardableResult init(_ url: URL, callback: @escaping FSEventStreamCallback) {
-    let stream = FSEventStreamCreate(
-      nil, callback, nil, [url.path() as NSString] as NSArray,
-      UInt64(kFSEventStreamEventIdSinceNow), 1.0,
-      FSEventStreamCreateFlags(kFSEventStreamCreateFlagFileEvents))!
+  nonisolated(unsafe) static var onEvent: ([URL]) -> Void = {_ in}
 
-    FSEventStreamSetDispatchQueue(stream, DispatchQueue.main)
-    FSEventStreamStart(stream)
+  static let callback: FSEventStreamCallback = { (_, _, count, paths, _, _) in
+    let unsafePointer = paths.assumingMemoryBound(to:UnsafePointer<CChar>.self)
+    let bufferPointer = UnsafeBufferPointer(start:unsafePointer, count:count)
+    let eventUrls = Array(Set((0..<count).map {URL(pointer:bufferPointer[$0])}))
+    Watcher.onEvent(eventUrls)
   }
 
-  static func parseEvents(_ numEvents: Int, _ eventPaths: UnsafeMutableRawPointer) -> [URL] {
-    let bufferPathsStart = eventPaths.assumingMemoryBound(to:UnsafePointer<CChar>.self)
-    let bufferPaths      = UnsafeBufferPointer(start:bufferPathsStart, count:numEvents)
-
-    let urls = (0..<numEvents).map
-      {URL(fileURLWithFileSystemRepresentation:bufferPaths[$0], isDirectory:false, relativeTo:nil)}
-
-    return Array(Set(urls))
+  @discardableResult init(_ url: URL, onEvent: @escaping ([URL]) -> Void) {
+    Self.onEvent = onEvent
+    let eventStream = FSEventStreamCreate(nil, Self.callback, nil,
+      [url.path() as NSString] as NSArray, UInt64(kFSEventStreamEventIdSinceNow), 1.0,
+      FSEventStreamCreateFlags(kFSEventStreamCreateFlagFileEvents))!
+    FSEventStreamSetDispatchQueue(eventStream, DispatchQueue.main)
+    FSEventStreamStart(eventStream)
   }
 }
 
 extension URL {
-  func watch(callback: @escaping FSEventStreamCallback)
-    {Watcher(self, callback:callback)}
+  init(pointer: UnsafePointer<Int8>)
+    {self = URL(fileURLWithFileSystemRepresentation:pointer, isDirectory:false, relativeTo:nil)}
+
+  func watch(onEvent: @escaping ([URL]) -> Void)
+    {Watcher(self, onEvent:onEvent)}
 }

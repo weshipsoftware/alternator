@@ -8,8 +8,6 @@ Markdown built-in. Localhost server optional.
 
 ```shell
 ~/website % alternator --help
-OVERVIEW: Alternator builds static websites.
-
 USAGE: alternator [<source>] [<target>] [--port <port>]
 
 ARGUMENTS:

@@ -2,11 +2,13 @@ import Foundation
 import Ink
 
 struct Project {
-  nonisolated(unsafe) static var source: URL?
-  nonisolated(unsafe) static var target: URL?
+  nonisolated(unsafe) static var source: URL?, target: URL?
 
   static var sourceContainsTarget: Bool {target!.masked.contains(source!.masked)}
   static var targetContainsSource: Bool {source!.masked.contains(target!.masked)}
+
+  static func file(_ ref: String) -> File?
+    {source!.list.filter({!$0.isDirectory}).map({File(source:$0)}).first(where: {$0.ref == ref})}
 
   static func build() {
     do {
@@ -16,84 +18,43 @@ struct Project {
           ? true : !$0.absoluteString.contains(target!.absoluteString)}
         .map {File(source: $0)}
 
-      try buildFiles(manifest)
-      try pruneFiles(manifest)
-      try pruneFolders(manifest)
+      try manifest
+        .filter {$0.source.lastPathComponent.prefix(1) != "!"}
+        .filter {try $0.isModified}
+        .forEach {try $0.build()}
+
+      try target!.list
+        .filter {!$0.isDirectory}
+        .filter {!manifest.map({$0.source.absoluteString}).contains($0.absoluteString)}
+        .filter {!manifest.map({$0.target.absoluteString}).contains($0.absoluteString)}
+        .forEach {
+          print("[build] deleting \($0.masked)", to:&FileHandle.stderr)
+          try FileManager.default.removeItem(at:$0)}
+
+      try target!.list
+        .filter {$0.isDirectory}
+        .filter {!targetContainsSource ? true : !$0.absoluteString.contains(source!.absoluteString)}
+        .filter {try FileManager.default
+          .contentsOfDirectory(atPath:$0.path(percentEncoded:false))
+          .isEmpty}
+        .forEach {
+          print("[build] deleting \($0.masked)", to:&FileHandle.stderr)
+          try FileManager.default.removeItem(at:$0)}
     }
 
     catch {
       guard ["no such file", "doesn’t exist", "already exists", "couldn’t be removed."]
         .contains(where:error.localizedDescription.contains)
       else {
-        print(error)
         print("[build] Error: \(error.localizedDescription)", to:&FileHandle.stderr)
         exit(1)
       }
     }
   }
-
-  static func file(_ ref: String) -> File? {
-    source!.list
-      .filter {!$0.isDirectory}
-      .map {File(source:$0)}
-      .first(where: {$0.ref == ref})
-  }
-}
-
-private extension Project {
-  static func buildFiles(_ manifest: [File]) throws {
-    try manifest
-      .filter {$0.source.lastPathComponent.prefix(1) != "!"}
-      .filter {try $0.isModified}
-      .forEach {try $0.build()}
-  }
-
-  static func pruneFiles(_ manifest: [File]) throws {
-    try target!.list
-      .filter {!$0.isDirectory}
-      .filter {!manifest.map({$0.source.absoluteString}).contains($0.absoluteString)}
-      .filter {!manifest.map({$0.target.absoluteString}).contains($0.absoluteString)}
-      .forEach {
-        print("[build] deleting \($0.masked)", to:&FileHandle.stderr)
-        try FileManager.default.removeItem(at:$0)}
-  }
-
-  static func pruneFolders(_ manifest: [File]) throws {
-    try target!.list
-      .filter {$0.isDirectory}
-      .filter {!targetContainsSource ? true : !$0.absoluteString.contains(source!.absoluteString)}
-      .filter {try FileManager.default
-        .contentsOfDirectory(atPath:$0.path(percentEncoded:false))
-        .isEmpty}
-      .forEach {
-        print("[build] deleting \($0.masked)", to:&FileHandle.stderr)
-        try FileManager.default.removeItem(at:$0)}
-  }
 }
 
 struct File {
   let source: URL
-
-  var contents: String { get throws {
-    let text = try source.contents
-    if source.pathExtension == "md" {return File.parser.html(from:text)}
-    if try metadata.isEmpty == true {return text}
-    if let match = text.find(#"---(\n|.)*?---\n"#).first {return text.replacingFirst(of:match)}
-    return text
-  }}
-
-  var isModified: Bool { get throws {
-    guard target.exists,
-      let sourceModDate = try source.modificationDate,
-      let targetModDate = try target.modificationDate,
-      targetModDate > sourceModDate
-    else {return true}
-    return try dependencies.contains
-      {try $0.source.modificationDate! > targetModDate}
-  }}
-
-  var metadata: [String: String] { get throws
-    {File.parser.parse(try source.contents).metadata}}
 
   var ref: String
     {source.path(percentEncoded:false).replacingFirst(of:Project.source!.path()).asRef}
@@ -103,6 +64,44 @@ struct File {
     return url.pathExtension == "md"
     ? url.deletingPathExtension().appendingPathExtension("html") : url
   }
+
+  var isModified: Bool { get throws {
+    guard target.exists,
+      let sourceModDate = try source.modificationDate,
+      let targetModDate = try target.modificationDate,
+      targetModDate > sourceModDate
+    else {return true}
+    return try dependencies.contains {try $0.source.modificationDate! > targetModDate}
+  }}
+
+  var isRenderable: Bool
+    {["css", "htm", "html", "js", "md", "rss", "svg", "txt", "xml"].contains(source.pathExtension)}
+
+  var metadata: [String: String] { get throws
+    {MarkdownParser.shared.parse(try source.contents).metadata}}
+
+  var contents: String { get throws {
+    let text = try source.contents
+    if source.pathExtension == "md" {return MarkdownParser.shared.html(from:text)}
+    if try metadata.isEmpty == true {return text}
+    if let match = text.find(#"---(\n|.)*?---\n"#).first {return text.replacingFirst(of:match)}
+    return text
+  }}
+
+  var layout: File? { get throws {
+    guard let ref = try metadata["#layout"] else {return nil}
+    return Project.file(ref)
+  }}
+
+  var dependencies: [File] { get throws {
+    guard isRenderable else {return []}
+    let deps: [File?] =
+      try contents.find(Include.pattern).map {Include(fragment:$0).file} + [try layout]
+    return try deps
+      .filter({$0 != nil && $0!.source.exists == true}).map {$0!}
+      .flatMap({try [$0] + $0.dependencies}).map {$0.source}
+      .unique.map {File(source: $0)}
+  }}
 
   func build() throws {
     if target.exists
@@ -125,30 +124,6 @@ struct File {
       try target.touch()
     }
   }
-}
-
-private extension File {
-  nonisolated(unsafe) static let parser = MarkdownParser()
-
-  var dependencies: [File] { get throws {
-    guard isRenderable else {return []}
-
-    let deps: [File?] =
-      try contents.find(Include.pattern).map {Include(fragment:$0).file} + [try layout]
-
-    return try deps
-      .filter({$0 != nil && $0!.source.exists == true}).map {$0!}
-      .flatMap({try [$0] + $0.dependencies}).map {$0.source}
-      .unique.map {File(source: $0)}
-  }}
-
-  var isRenderable: Bool
-    {["css", "htm", "html", "js", "md", "rss", "svg", "txt", "xml"].contains(source.pathExtension)}
-
-  var layout: File? { get throws {
-    guard let ref = try metadata["#layout"] else {return nil}
-    return Project.file(ref)
-  }}
 
   func render(_ context: [String: String] = [:]) throws -> String {
     var context = context.merging(try metadata, uniquingKeysWith: {(x, _) in x})
@@ -184,21 +159,16 @@ private extension File {
 }
 
 struct Layout {
-  let content  : String
-  let template : File
+  let content: String, template: File
 
-  static let pattern =
-    #"((<!--|/\*|/\*\*)\s*#content[\s\S]*?(-->|\*/)|//[^\S\r\n]*#content[^\n]*)"#
+  static let pattern = #"((<!--|/\*|/\*\*)\s*#content[\s\S]*?(-->|\*/)|//[^\S\r\n]*#content[^\n]*)"#
 
   func render() throws -> String {
     var text = try template.contents
-
     for match in text.find(Layout.pattern)
       {text = text.replacingFirst(of:match, with:content)}
-
     if let ref = try template.metadata["#layout"], let file = Project.file(ref)
       {text = try Layout(content:text, template:file).render()}
-
     return text
   }
 }
@@ -206,8 +176,7 @@ struct Layout {
 struct Include {
   var fragment: String
 
-  static let pattern =
-    #"((<!--|/\*|/\*\*)\s*#include[\s\S]*?(-->|\*/)|//[^\S\r\n]*#include[^\n]*)"#
+  static let pattern = #"((<!--|/\*|/\*\*)\s*#include[\s\S]*?(-->|\*/)|//[^\S\r\n]*#include[^\n]*)"#
 
   var file: File? {
     guard let ref = arguments?
@@ -234,9 +203,7 @@ struct Include {
 
     return params
   }
-}
 
-private extension Include {
   var arguments:String? {
     enum Predicate: String {
       case singleLine = #"//\s*#include\s+(?<args>.+?)"#
@@ -245,7 +212,6 @@ private extension Include {
 
     if let match = try? Regex(Predicate.singleLine.rawValue).wholeMatch(in:fragment)
       {return match["args"]?.substring?.description}
-
     if let match = try? Regex(Predicate.multiLine.rawValue).wholeMatch(in:fragment)
       {return match["args"]?.substring?.description}
 
@@ -256,28 +222,21 @@ private extension Include {
 struct Variable {
   var fragment: String
 
-  static let pattern =
-    #"((<!--|/\*|/\*\*)\s*@[\s\S]*?(-->|\*/)|//[^\S\r\n]*@[^\n]*)"#
+  static let pattern = #"((<!--|/\*|/\*\*)\s*@[\s\S]*?(-->|\*/)|//[^\S\r\n]*@[^\n]*)"#
 
-  var defaultValue: String?
-    {arguments.count == 2 ? arguments.last : nil}
+  var key: String {arguments.first!}
 
-  var key: String
-    {arguments.first!}
-}
+  var defaultValue: String? {arguments.count == 2 ? arguments.last : nil}
 
-private extension Variable {
-  var arguments:[String] {
-    var args = ""
-
+  var arguments: [String] {
     enum Predicate: String {
       case singleLine = #"//\s*@+(?<var>.+?)"#
       case multiLine  = #"(<!--|/\*|/\*\*)\s*@(?<var>(.|\n)+?)(-->|\*/)"#
     }
 
+    var args = ""
     if let match = try? Regex(Predicate.singleLine.rawValue).wholeMatch(in:fragment)
       {args = match["var"]!.substring!.description}
-
     if let match = try? Regex(Predicate.multiLine.rawValue).wholeMatch(in:fragment)
       {args = match["var"]!.substring!.description}
 
@@ -285,20 +244,20 @@ private extension Variable {
       .split(separator:"??", maxSplits:1)
       .map {$0.trimmingCharacters(in:.whitespacesAndNewlines)}
       .enumerated()
-      .map {(i, arg) in
-        guard i == 0 else {return arg}
-        return "@" + arg}
+      .map {(i, arg) in i == 0 ? "@" + arg : arg}
   }
 }
 
 extension Array where Element: Hashable {
-  var unique: [Element]
-    {Array(Set(self))}
+  var unique: [Element] {Array(Set(self))}
+}
+
+extension MarkdownParser {
+  nonisolated(unsafe) static let shared = MarkdownParser()
 }
 
 extension String {
-  var asRef: String
-    {split(separator:"/").joined(separator:"/")}
+  var asRef: String {split(separator:"/").joined(separator:"/")}
 
   func find(_ pattern: String) -> [String] {
     try! NSRegularExpression(pattern:pattern)
@@ -313,8 +272,7 @@ extension String {
 }
 
 extension URL {
-  var contents: String { get throws
-    {String(decoding: try Data(contentsOf:self), as: UTF8.self)}}
+  var contents: String { get throws {String(decoding: try Data(contentsOf:self), as: UTF8.self)}}
 
   var exists:Bool {
     let file = path(percentEncoded:false)
@@ -322,8 +280,7 @@ extension URL {
     return FileManager.default.fileExists(atPath:file, isDirectory:&isDir)
   }
 
-  var isDirectory: Bool
-    {(try? resourceValues(forKeys:[.isDirectoryKey]))?.isDirectory == true}
+  var isDirectory: Bool {(try? resourceValues(forKeys:[.isDirectoryKey]))?.isDirectory == true}
 
   var list: [URL] {
     guard exists else { return [] }
@@ -334,7 +291,7 @@ extension URL {
       .map {appending(component: $0)}
   }
 
-  var masked:String {
+  var masked: String {
     path(percentEncoded:false)
       .replacingFirst(of:FileManager.default.currentDirectoryPath)
       .replacingFirst(of:"file:///")

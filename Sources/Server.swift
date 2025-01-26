@@ -3,10 +3,7 @@ import Network
 import UniformTypeIdentifiers
 
 struct Request {
-  let headers     : [String: String]
-  let httpVersion :  String
-  let method      :  String
-  let path        :  String
+  let headers: [String: String], httpVersion: String, method: String, path: String
 
   init?(_ data: Data) {
     let request = String(data:data, encoding:.utf8)!.components(separatedBy:"\r\n")
@@ -26,27 +23,20 @@ struct Request {
 }
 
 struct Response {
-  let body    :  Data
-  let headers : [Header: String]
-  let status  :  Status
+  let body: Data, headers: [Header: String], status: Status
 
   let httpVersion = "HTTP/1.1"
 
-  enum Header: String {
-    case contentLength = "Content-Length"
-    case contentType   = "Content-Type"
-  }
+  enum Header: String
+    {case contentLength = "Content-Length", contentType = "Content-Type"}
 
   enum Status: Int, CustomStringConvertible {
-    case ok       = 200
-    case notFound = 404
-    case teapot   = 418
-
+    case ok = 200, notFound = 404, teapot = 418
     var description: String {
       switch self {
-        case .ok       : return "OK"
-        case .notFound : return "Not Found"
-        case .teapot   : return "I'm a teapot"
+        case .ok:       return "OK"
+        case .notFound: return "Not Found"
+        case .teapot:   return "I'm a teapot"
       }
     }
   }
@@ -58,13 +48,12 @@ struct Response {
     return headerLines.joined(separator:"\r\n").data(using:.utf8)! + body
   }
 
-  init(_ status :  Status          = .ok,
-           body :  Data            = Data(),
-    contentType :  UTType?         = nil,
-        headers : [Header: String] = [:])
+  init(_ status:  Status          = .ok,
+           body:  Data            = Data(),
+    contentType:  UTType?         = nil,
+        headers: [Header: String] = [:])
   {
-    self.status  = status
-    self.body    = body
+    (self.status, self.body) = (status, body)
     self.headers = headers.merging(
       [.contentLength:String(body.count), .contentType:contentType?.preferredMIMEType]
         .compactMapValues {$0},
@@ -73,9 +62,8 @@ struct Response {
 
   init(filePath: String) throws {
     let url  = URL(filePath:filePath)
-    let data = try Data(contentsOf:url)
-    let contentType = try url.resourceValues(forKeys:[.contentTypeKey]).contentType
-    self.init(body:data, contentType:contentType)
+    self.init(body:try Data(contentsOf:url),
+      contentType:try url.resourceValues(forKeys:[.contentTypeKey]).contentType)
   }
 
   init(_ text: String, contentType: UTType = .plainText)
@@ -83,33 +71,27 @@ struct Response {
 }
 
 final class Server: Sendable {
-  let callback : @Sendable (Request?, Response?, NWError?) -> Void
-  let listener : NWListener
-  let path     : String
+  let listener: NWListener, path: String
+  let callback: @Sendable (Request?, Response?, NWError?) -> Void
 
   @discardableResult init(path: String, port: UInt16,
     callback: @escaping @Sendable (Request?, Response?, NWError?) -> Void)
   {
-    self.callback = callback
-    self.path     = path
+    (self.path, self.callback) = (path, callback)
     self.listener = try! NWListener(using:.tcp, on:NWEndpoint.Port(rawValue:port)!)
     listener.newConnectionHandler = {(_ connection: NWConnection) in
       connection.start(queue:.main)
       self.receive(from:connection)}
     listener.start(queue:.main)
   }
-}
 
-private extension Server {
   func receive(from connection: NWConnection) {
     connection.receive(minimumIncompleteLength:1, maximumLength:connection.maximumDatagramSize)
     { content, _, complete, error in
-      if let error
-        {self.callback(nil, nil, error)}
+      if let error {self.callback(nil, nil, error)}
       else if let content, let request = Request(content)
         {self.respond(on:connection, request:request)}
-      if !complete
-        {self.receive(from:connection)}
+      if !complete {self.receive(from:connection)}
     }
   }
 
