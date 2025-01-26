@@ -8,6 +8,5 @@
       "enabled" : true,
       "script" : "swift run alternator docs\/src docs -p 8080"
     }
-  },
-  "openLogOnRun" : "fail"
+  }
 }

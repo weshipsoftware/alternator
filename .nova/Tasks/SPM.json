@@ -12,6 +12,5 @@
       "enabled" : true,
       "script" : "swift run alternator --help"
     }
-  },
-  "openLogOnRun" : "start"
+  }
 }
