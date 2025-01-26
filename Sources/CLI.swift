@@ -7,30 +7,30 @@ struct CLI: ParsableCommand {
     commandName : "alternator",
        abstract : "Alternator builds static websites.",
         version : "2.0.0")
-  
+
   @Argument(help:"Path to your source directory.")
   var source: String = "."
-  
+
   @Argument(help:"Path to your target directory.")
   var target: String = "<source>/_build"
-  
+
   @Option(name:.shortAndLong, help:"Port for the localhost server.")
   var port: UInt16?
-  
+
   mutating func run() throws {
     if target == "<source>/_build" {target = "\(source)/_build"}
-    
+
     Project.source = URL(string:source.asRef, relativeTo:URL.currentDirectory())
     Project.target = URL(string:target.asRef, relativeTo:URL.currentDirectory())
-    
+
     guard Project.source!.exists else
       {throw ValidationError("<source> does not exist.")}
-      
+
     guard Project.source!.masked != Project.target!.masked else
       {throw ValidationError("<source> and <target> cannot be the same directory.")}
-    
+
     Project.build()
-    
+
     if let port = port {
       Project.source!.watch() {(_, _, count, paths, _, _) in
         guard !Watcher.parseEvents(count, paths)
@@ -53,7 +53,7 @@ struct CLI: ParsableCommand {
           {message.append("Error: \(error)")}
         print(message.joined(separator:" "), to:&FileHandle.stderr)
       }
-      
+
       print("[serve] serving \(Project.target!.masked) on http://localhost:\(port)",
         to:&FileHandle.stderr)
 
@@ -65,7 +65,7 @@ struct CLI: ParsableCommand {
 
 extension FileHandle: @retroactive TextOutputStream {
   nonisolated(unsafe) static var stderr = FileHandle.standardError
-  
+
   public func write(_ message: String)
     {write(message.data(using:.utf8)!)}
 }

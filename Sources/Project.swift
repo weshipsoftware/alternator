@@ -4,7 +4,7 @@ import Ink
 struct Project {
   nonisolated(unsafe) static var source: URL?
   nonisolated(unsafe) static var target: URL?
-  
+
   static var sourceContainsTarget: Bool {target!.masked.contains(source!.masked)}
   static var targetContainsSource: Bool {source!.masked.contains(target!.masked)}
 
@@ -15,7 +15,7 @@ struct Project {
         .filter {!sourceContainsTarget
           ? true : !$0.absoluteString.contains(target!.absoluteString)}
         .map {File(source: $0)}
-      
+
       try buildFiles(manifest)
       try pruneFiles(manifest)
       try pruneFolders(manifest)
@@ -47,7 +47,7 @@ private extension Project {
       .filter {try $0.isModified}
       .forEach {try $0.build()}
   }
-  
+
   static func pruneFiles(_ manifest: [File]) throws {
     try target!.list
       .filter {!$0.isDirectory}
@@ -57,7 +57,7 @@ private extension Project {
         print("[build] deleting \($0.masked)", to:&FileHandle.stderr)
         try FileManager.default.removeItem(at:$0)}
   }
-  
+
   static func pruneFolders(_ manifest: [File]) throws {
     try target!.list
       .filter {$0.isDirectory}
@@ -73,7 +73,7 @@ private extension Project {
 
 struct File {
   let source: URL
-  
+
   var contents: String { get throws {
     let text = try source.contents
     if source.pathExtension == "md" {return File.parser.html(from:text)}
@@ -81,7 +81,7 @@ struct File {
     if let match = text.find(#"---(\n|.)*?---\n"#).first {return text.replacingFirst(of:match)}
     return text
   }}
-  
+
   var isModified: Bool { get throws {
     guard target.exists,
       let sourceModDate = try source.modificationDate,
@@ -117,7 +117,7 @@ struct File {
       let (file, text) = (target.path(percentEncoded:false), try render().data(using:.utf8))
       FileManager.default.createFile(atPath:file, contents:text)
     }
-    
+
     else {
       print("[build] copying \(source.masked) -> \(target.masked)", to: &FileHandle.stderr)
       try source.touch()
@@ -129,7 +129,7 @@ struct File {
 
 private extension File {
   nonisolated(unsafe) static let parser = MarkdownParser()
-  
+
   var dependencies: [File] { get throws {
     guard isRenderable else {return []}
 
@@ -153,13 +153,13 @@ private extension File {
   func render(_ context: [String: String] = [:]) throws -> String {
     var context = context.merging(try metadata, uniquingKeysWith: {(x, _) in x})
     var text    = try contents
-  
+
     if let layout = try layout {
       let macro = Layout(content:text, template:layout)
       context = context.merging(try macro.template.metadata, uniquingKeysWith: {(x, _) in x})
       text = try macro.render()
     }
-  
+
     for match in text.find(Include.pattern) {
       let macro = Include(fragment:match)
       if macro.file?.source.exists == true {
@@ -171,14 +171,14 @@ private extension File {
         text = text.replacingFirst(of:match, with:try macro.file!.render(params))
       }
     }
-  
+
     for match in text.find(Variable.pattern) {
       let macro = Variable(fragment:match)
       if let value = context.contains(where: {$0.key == macro.key})
       ? context[macro.key] : macro.defaultValue
         {text = text.replacingFirst(of: match, with: value as String)}
     }
-  
+
     return text
   }
 }
@@ -186,29 +186,29 @@ private extension File {
 struct Layout {
   let content  : String
   let template : File
-  
+
   static let pattern =
     #"((<!--|/\*|/\*\*)\s*#content[\s\S]*?(-->|\*/)|//[^\S\r\n]*#content[^\n]*)"#
-  
+
   func render() throws -> String {
     var text = try template.contents
-    
+
     for match in text.find(Layout.pattern)
       {text = text.replacingFirst(of:match, with:content)}
-    
+
     if let ref = try template.metadata["#layout"], let file = Project.file(ref)
       {text = try Layout(content:text, template:file).render()}
-    
+
     return text
   }
 }
 
 struct Include {
   var fragment: String
-  
+
   static let pattern =
     #"((<!--|/\*|/\*\*)\s*#include[\s\S]*?(-->|\*/)|//[^\S\r\n]*#include[^\n]*)"#
-  
+
   var file: File? {
     guard let ref = arguments?
       .split(separator:" ").first?
@@ -216,7 +216,7 @@ struct Include {
     else {return nil}
     return Project.file(ref)
   }
-  
+
   var parameters: [String: String] {
     var params: [String: String] = [:]
 
@@ -242,7 +242,7 @@ private extension Include {
       case singleLine = #"//\s*#include\s+(?<args>.+?)"#
       case multiLine  = #"(<!--|/\*|/\*\*)\s*#include\s+(?<args>(.|\n)+?)(-->|\*/)"#
     }
-    
+
     if let match = try? Regex(Predicate.singleLine.rawValue).wholeMatch(in:fragment)
       {return match["args"]?.substring?.description}
 
@@ -255,7 +255,7 @@ private extension Include {
 
 struct Variable {
   var fragment: String
-  
+
   static let pattern =
     #"((<!--|/\*|/\*\*)\s*@[\s\S]*?(-->|\*/)|//[^\S\r\n]*@[^\n]*)"#
 
@@ -269,18 +269,18 @@ struct Variable {
 private extension Variable {
   var arguments:[String] {
     var args = ""
-    
+
     enum Predicate: String {
       case singleLine = #"//\s*@+(?<var>.+?)"#
       case multiLine  = #"(<!--|/\*|/\*\*)\s*@(?<var>(.|\n)+?)(-->|\*/)"#
     }
-        
+
     if let match = try? Regex(Predicate.singleLine.rawValue).wholeMatch(in:fragment)
       {args = match["var"]!.substring!.description}
-    
+
     if let match = try? Regex(Predicate.multiLine.rawValue).wholeMatch(in:fragment)
       {args = match["var"]!.substring!.description}
-    
+
     return args
       .split(separator:"??", maxSplits:1)
       .map {$0.trimmingCharacters(in:.whitespacesAndNewlines)}
@@ -305,7 +305,7 @@ extension String {
       .matches(in:self, range: NSRange(location:0, length:self.utf16.count))
       .map {(self as NSString).substring(with:$0.range)}
   }
-  
+
   func replacingFirst(of: String, with: String = "") -> String {
     guard let range = range(of:of) else {return self}
     return replacingCharacters(in:range, with:with)
@@ -315,13 +315,13 @@ extension String {
 extension URL {
   var contents: String { get throws
     {String(decoding: try Data(contentsOf:self), as: UTF8.self)}}
-  
+
   var exists:Bool {
     let file = path(percentEncoded:false)
     var isDir: ObjCBool = true
     return FileManager.default.fileExists(atPath:file, isDirectory:&isDir)
   }
-  
+
   var isDirectory: Bool
     {(try? resourceValues(forKeys:[.isDirectoryKey]))?.isDirectory == true}
 
@@ -333,7 +333,7 @@ extension URL {
       .filter {!$0.contains(".DS_Store")}
       .map {appending(component: $0)}
   }
-  
+
   var masked:String {
     path(percentEncoded:false)
       .replacingFirst(of:FileManager.default.currentDirectoryPath)
@@ -345,7 +345,7 @@ extension URL {
     let (file, key) = (path(percentEncoded:false), FileAttributeKey.modificationDate)
     return try FileManager.default.attributesOfItem(atPath:file)[key] as? Date
   }}
-  
+
   func touch() throws {
     var (file, resourceValues) = (self, URLResourceValues())
     resourceValues.contentModificationDate = Date()
