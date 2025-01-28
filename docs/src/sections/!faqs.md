@@ -39,11 +39,6 @@ Included files can have their own layouts set in metadata.
 
 You can assign a default value with `??`: `<!-- @foo ?? bar -->`
 
-### Is it possible to capture scope in an included file?
-
-Passing `#closure: true` as an `#include` argument will make all the _including_ file's variables
-available in the _included_ file.
-
 ### What if I find a bug?
 
 Let me know at: [email@jarrodtaylor.me](mailto:email@jarrodtaylor.me)
