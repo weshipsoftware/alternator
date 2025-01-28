@@ -6,9 +6,9 @@ Use an `#include` comment to include another file.
 
 ```html
 ---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 ---
-<!-- #include path/to/source/!header.html -->
+<!-- #include !header.html -->
 <p>Hello, world!</p>
 ```
 
@@ -46,3 +46,8 @@ Use an `#include` comment to include another file.
   </body>
 </html>
 ```
+
+### Pro Tips
+
+- Included files can have their own layouts.
+- `#include` arguments override the included file's metadata:<br />`<!-- #include !file.html #layout: false @foo: bar -->`

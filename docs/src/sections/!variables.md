@@ -8,10 +8,10 @@ Assign values in metatdata or as `#include` arguments.
 
 ```html
 ---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 @siteTitle: Alternator
 ---
-<!-- #include path/to/source/!header.html @pageTitle: Welcome -->
+<!-- #include !header.html @pageTitle: Welcome -->
 <p>Hello, world!</p>
 ```
 
@@ -49,3 +49,11 @@ Assign values in metatdata or as `#include` arguments.
   </body>
 </html>
 ```
+
+### Pro Tips
+
+- Use `??` to assign a default value: `<!-- @foo ?? bar -->`
+- Any comment syntax works:
+  <code>&lt;!-- @foo --></code>,
+  <code>/* @foo */</code>, or
+  <code>// @foo</code>

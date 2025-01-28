@@ -30,3 +30,14 @@ Add a `--port` to make `<target>` available on localhost:
 ```
 
 `<source>` _changes are automatically rebuilt while the server is running._
+
+### Pro Tips
+
+- Any filename starting with `!` will _not_ be built to `<target>`.
+- Markdown files are automatically converted to HTML:<br />
+  `path/to/source/index.md` &rarr; `path/to/target/index.html`
+- Layouts, includes, variables, and metadata work with:
+  <br />
+  _.css_, _.htm_, _.html_, _.js_, _.md_, _.rss_, _.svg_, _.txt_, and _.xml_.
+  <br />
+  Everything else is copied from `<source>` to `<target>`.

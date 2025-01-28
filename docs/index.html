@@ -43,9 +43,9 @@ OPTIONS:
 [watch] watching path/to/source for changes
 [serve] serving path/to/target on http://localhost:8080
 ^c to stop
-</code></pre><p><code>&lt;source&gt;</code> <em>changes are automatically rebuilt while the server is running.</em></p>
+</code></pre><p><code>&lt;source&gt;</code> <em>changes are automatically rebuilt while the server is running.</em></p><h3>Pro Tips</h3><ul><li>Any filename starting with <code>!</code> will <em>not</em> be built to <code>&lt;target&gt;</code>.</li><li>Markdown files are automatically converted to HTML:<br /> <code>path/to/source/index.md</code> &rarr; <code>path/to/target/index.html</code></li><li>Layouts, includes, variables, and metadata work with: <br /> <em>.css</em>, <em>.htm</em>, <em>.html</em>, <em>.js</em>, <em>.md</em>, <em>.rss</em>, <em>.svg</em>, <em>.txt</em>, and <em>.xml</em>. <br /> Everything else is copied from <code>&lt;source&gt;</code> to <code>&lt;target&gt;</code>.</li></ul>
   <h2>Layouts</h2><p>Specify a layout with the <code>#layout</code> metadata key.</p><p>Any file with a <code>#content</code> comment can be used as a layout.</p><blockquote><p><strong>Source</strong> <em>path/to/source/index.html</em></p></blockquote><pre><code class="language-html">---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 ---
 &lt;h1&gt;Welcome&lt;/h1&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
@@ -68,11 +68,11 @@ OPTIONS:
     &lt;p&gt;Hello, world!&lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
-</code></pre>
+</code></pre><h3>Pro Tips</h3><ul><li><code>#layout</code> and <code>#include</code> paths are relative to <code>&lt;source&gt;</code>.</li></ul>
   <h2>Includes</h2><p>Use an <code>#include</code> comment to include another file.</p><blockquote><p><strong>Source</strong> <em>path/to/source/index.html</em></p></blockquote><pre><code class="language-html">---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 ---
-&lt;!-- #include path/to/source/!header.html --&gt;
+&lt;!-- #include !header.html --&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
 </code></pre><blockquote><p><strong>Include</strong> <em>path/to/source/!header.html</em></p></blockquote><pre><code class="language-html">&lt;h1&gt;Welcome&lt;/h1&gt;
 </code></pre><blockquote><p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p></blockquote><pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -94,12 +94,12 @@ OPTIONS:
     &lt;p&gt;Hello, world!&lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
-</code></pre>
+</code></pre><h3>Pro Tips</h3><ul><li>Included files can have their own layouts.</li><li><code>#include</code> arguments override the included file's metadata:<br /><code>&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code></li></ul>
   <h2>Variables</h2><p>Define variables with <code>@</code> symbols and render them in comments.</p><p>Assign values in metatdata or as <code>#include</code> arguments.</p><blockquote><p><strong>Source</strong> <em>path/to/source/index.html</em></p></blockquote><pre><code class="language-html">---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 @siteTitle: Alternator
 ---
-&lt;!-- #include path/to/source/!header.html @pageTitle: Welcome --&gt;
+&lt;!-- #include !header.html @pageTitle: Welcome --&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
 </code></pre><blockquote><p><strong>Include</strong> <em>path/to/source/!header.html</em></p></blockquote><pre><code class="language-html">&lt;h1&gt;&lt;!-- @pageTitle --&gt;&lt;/h1&gt;
 </code></pre><blockquote><p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p></blockquote><pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -121,17 +121,7 @@ OPTIONS:
     &lt;p&gt;Hello, world!&lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;
-</code></pre>
-  <hr><h3>Which file types can I use?</h3><p><em>.css</em>, <em>.htm</em>, <em>.html</em>, <em>.js</em>, <em>.md</em>, <em>.rss</em>, <em>.svg</em>, <em>.txt</em>, and <em>.xml</em>.</p><p>
-  Use the appropriate syntax:
-  <code>&lt;!-- @foo --></code>,
-  <code>/* @foo */</code>, or
-  <code>// @foo</code>
-</p><p><em>Everything else is simply copied from</em> <code>&lt;source&gt;</code> <em>to</em> <code>&lt;target&gt;</code>.</p><h3>What about Markdown?</h3><p>Markdown files are automatically converted to HTML.</p><p><code>path/to/source/index.md</code> &rarr; <code>path/to/target/index.html</code></p><h3>How do I tell Alternator to ignore certain files?</h3><p>Any filename starting with <code>!</code> will <em>not</em> be built to <code>&lt;target&gt;</code>.</p><p><em>This is especially useful for layouts and included files.</em></p><h3>Can I nest layouts?</h3><p>Included files can have their own layouts set in metadata.</p><h3>How would I override a metadata variable?</h3><p><code>#include</code> arguments will override the included file's metadata.</p><p><code>&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code></p><h3>Do variables have default values?</h3><p>You can assign a default value with <code>??</code>: <code>&lt;!-- @foo ?? bar --&gt;</code></p><h3>What if I find a bug?</h3><p>Let me know at: <a href="mailto:email@jarrodtaylor.me">email@jarrodtaylor.me</a></p><!--
-### How can I support Alternator?
-
-Buy my a coffee.
---><hr>
+</code></pre><h3>Pro Tips</h3><ul><li>Use <code>??</code> to assign a default value: <code>&lt;!-- @foo ?? bar --&gt;</code></li><li>Any comment syntax works: <code>&lt;!-- @foo --></code>, <code>/* @foo */</code>, or <code>// @foo</code></li></ul>
 </main>
 
 <footer>

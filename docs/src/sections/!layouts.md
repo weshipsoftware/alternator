@@ -8,7 +8,7 @@ Any file with a `#content` comment can be used as a layout.
 
 ```html
 ---
-#layout: path/to/source/!layout.html
+#layout: !layout.html
 ---
 <h1>Welcome</h1>
 <p>Hello, world!</p>
@@ -42,3 +42,7 @@ Any file with a `#content` comment can be used as a layout.
   </body>
 </html>
 ```
+
+### Pro Tips
+
+- `#layout` and `#include` paths are relative to `<source>`.
