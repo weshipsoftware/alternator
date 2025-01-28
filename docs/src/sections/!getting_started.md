@@ -2,16 +2,16 @@
 
 ```shell
 ~/website % alternator --help
-USAGE: alternator [<source>] [<target>] [--port <port>]
+USAGE: alternator <source> <target> [--port <port>]
 
 ARGUMENTS:
-  <source>             Path to your source directory. (default: .)
-  <target>             Path to your target directory. (default: <source>/_build)
+  <source>                Path to your source directory.
+  <target>                Path to your target directory.
 
 OPTIONS:
-  -p, --port <port>    Port for the localhost server.
-  --version            Show the version.
-  -h, --help           Show help information.
+  -p, --port <port>       Port for the localhost server.
+  --version               Show the version.
+  -h, --help              Show help information.
 ```
 
 The `alternator` command builds your `<source>` files into `<target>`:

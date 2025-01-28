@@ -140,9 +140,6 @@ struct File {
       if macro.file?.source.exists == true {
         var params = macro.parameters
         for (key, val) in params where context[val] != nil {params[key] = context[val]}
-        // if params["#closure"] == "true" {
-        //   params.removeValue(forKey:"#closure")
-        //   params = params.merging(context, uniquingKeysWith: {(x, _) in x})}
         text = text.replacingFirst(of:match, with:try macro.file!.render(params))
       }
     }

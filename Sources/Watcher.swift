@@ -10,7 +10,7 @@ class Watcher {
     Watcher.onEvent(eventUrls)
   }
 
-  @discardableResult init(_ url: URL, onEvent: @escaping ([URL]) -> Void) {
+  @discardableResult init(url: URL, onEvent: @escaping ([URL]) -> Void) {
     Self.onEvent = onEvent
     let eventStream = FSEventStreamCreate(nil, Self.callback, nil,
       [url.path() as NSString] as NSArray, UInt64(kFSEventStreamEventIdSinceNow), 1.0,
@@ -23,7 +23,4 @@ class Watcher {
 extension URL {
   init(pointer: UnsafePointer<Int8>)
     {self = URL(fileURLWithFileSystemRepresentation:pointer, isDirectory:false, relativeTo:nil)}
-
-  func watch(onEvent: @escaping ([URL]) -> Void)
-    {Watcher(self, onEvent:onEvent)}
 }

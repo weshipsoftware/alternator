@@ -28,16 +28,16 @@
 
 <main>
   <h2>Getting Started</h2><pre><code class="language-shell">~/website % alternator --help
-USAGE: alternator [&lt;source&gt;] [&lt;target&gt;] [--port &lt;port&gt;]
+USAGE: alternator &lt;source&gt; &lt;target&gt; [--port &lt;port&gt;]
 
 ARGUMENTS:
-  &lt;source&gt;             Path to your source directory. (default: .)
-  &lt;target&gt;             Path to your target directory. (default: &lt;source&gt;/_build)
+  &lt;source&gt;                Path to your source directory.
+  &lt;target&gt;                Path to your target directory.
 
 OPTIONS:
-  -p, --port &lt;port&gt;    Port for the localhost server.
-  --version            Show the version.
-  -h, --help           Show help information.
+  -p, --port &lt;port&gt;       Port for the localhost server.
+  --version               Show the version.
+  -h, --help              Show help information.
 </code></pre><p>The <code>alternator</code> command builds your <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>:</p><pre><code class="language-shell">~/website % alternator path/to/source path/to/target
 </code></pre><p>Add a <code>--port</code> to make <code>&lt;target&gt;</code> available on localhost:</p><pre><code class="language-shell">~/website %  alternator path/to/source path/to/target --port 8080
 [watch] watching path/to/source for changes

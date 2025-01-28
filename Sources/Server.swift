@@ -126,8 +126,3 @@ final class Server: Sendable {
     connection.send(content:response.data, completion:.idempotent)
   }
 }
-
-extension URL {
-  func serve(port: UInt16, callback: @escaping @Sendable (Request?, Response?, NWError?) -> Void)
-    {Server(path:self.masked, port:port, callback:callback)}
-}
