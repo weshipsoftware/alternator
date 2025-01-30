@@ -269,7 +269,7 @@ extension String {
 }
 
 extension URL {
-  var contents: String { get throws {String(decoding: try Data(contentsOf:self), as: UTF8.self)}}
+  var contents: String { get throws {String(decoding: try Data(contentsOf:self), as:UTF8.self)}}
 
   var exists:Bool {
     let file = path(percentEncoded:false)
