@@ -40,3 +40,4 @@ Add a `--port` to make `<target>` available on localhost:
   _.css_, _.htm_, _.html_, _.js_, _.md_, _.rss_, _.svg_, _.txt_, and _.xml_.
   <br />
   All other file types are copied unchanged to `<target>`.
+- Dotfiles are completely ignored.

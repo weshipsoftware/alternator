@@ -284,7 +284,9 @@ extension URL {
     let file = path()
     return FileManager.default
       .subpaths(atPath:file)!
-      .filter {!$0.contains(".DS_Store")}
+      .filter {!$0
+        .split(separator: "/")
+        .contains(where: {component in component.first == "."})}
       .map {appending(component: $0)}
   }
 
