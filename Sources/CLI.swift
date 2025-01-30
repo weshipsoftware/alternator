@@ -5,30 +5,28 @@ import Foundation
 struct CLI: ParsableCommand {
   static let configuration = CommandConfiguration(commandName: "alternator", version: "2.0.0")
 
-  @Argument(help:"Path to your source directory.", completion: .directory, transform: { input in
-    Project.source = URL(string:input.asRef, relativeTo:URL.currentDirectory())
+  @Argument(help:"Path to your source directory.", completion: .directory)
+  var source: String
+
+  @Argument(help:"Path to your target directory.", completion: .directory)
+  var target: String
+
+  @Option(name:.shortAndLong, help:"Port for the localhost server.")
+  var port: UInt16?
+
+  func validate() throws {
+    Project.source = URL(string:source.asRef, relativeTo:URL.currentDirectory())
     guard Project.source!.exists else
       {throw ValidationError("<source> does not exist.")}
     guard Project.source!.isDirectory else
       {throw ValidationError("<source> must be a directory.")}
-    return Project.source
-  })
 
-  var source: URL?
-
-  @Argument(help:"Path to your target directory.", completion: .directory, transform: { input in
-    Project.target = URL(string:input.asRef, relativeTo:URL.currentDirectory())
+    Project.target = URL(string:target.asRef, relativeTo:URL.currentDirectory())
     guard Project.source!.masked != Project.target!.masked else
       {throw ValidationError("<source> and <target> cannot be the same directory.")}
-    guard Project.target!.isDirectory else
+    guard !Project.target!.exists || Project.target!.isDirectory else
       {throw ValidationError("<target> must be a directory.")}
-    return Project.target
-  })
-
-  var target: URL?
-
-  @Option(name:.shortAndLong, help:"Port for the localhost server.")
-  var port: UInt16?
+  }
 
   mutating func run() throws {
     Project.build()
