@@ -1,5 +1,5 @@
 {
-  "originHash" : "7ac8e0fb21780201c9352922400b89012f68ff24f2ba156b16039ec1c013de0a",
+  "originHash" : "25c10156f3e730c124632a66c15b19d3cbeed37684ddf520135b0881ffd8ab81",
   "pins" : [
     {
       "identity" : "ink",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "bcc9f219900a62c4210e6db726035d7f03ae757b",
         "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "prettier",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:simonbs/Prettier.git",
+      "state" : {
+        "revision" : "266dac500bded844a56771bc1fb2abaa60f6e7b6",
+        "version" : "0.2.1"
       }
     },
     {

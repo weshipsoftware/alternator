@@ -1,5 +1,9 @@
 import Foundation
 import Ink
+import Prettier
+import PrettierBabel
+import PrettierHTML
+import PrettierPostCSS
 
 struct Project {
   nonisolated(unsafe) static var source: URL?, target: URL?
@@ -82,7 +86,13 @@ struct File {
 
   var contents: String { get throws {
     let text = try source.contents
-    if source.pathExtension == "md" {return MarkdownParser.shared.html(from:text)}
+    if source.pathExtension == "md" {
+      let parsedText = MarkdownParser.shared.html(from:text)
+      switch PrettierFormatter.shared.format(parsedText) {
+        case .success(let formattedText): return formattedText
+        case .failure(let error):
+          print("[build] Warning: \(error)", to:&FileHandle.stderr)
+          return parsedText}}
     if try metadata.isEmpty == true {return text}
     if let match = text.find(#"---(\n|.)*?---\n"#).first {return text.replacingFirst(of:match)}
     return text
@@ -251,6 +261,16 @@ extension Array where Element: Hashable {
 
 extension MarkdownParser {
   nonisolated(unsafe) static let shared = MarkdownParser()
+}
+
+extension PrettierFormatter {
+  static var shared: PrettierFormatter {
+    let formatter = PrettierFormatter(
+      plugins: [HTMLPlugin(), PostCSSPlugin(), BabelPlugin()],
+      parser: HTMLParser())
+    formatter.prepare()
+    return formatter
+  }
 }
 
 extension String {

@@ -1,5 +1,8 @@
 import Foundation
 
+// TODO: Use instances instead of statics.
+// --> Watcher(path: ...).onChange({urls in ...})
+
 class Watcher {
   nonisolated(unsafe) static var onEvent: ([URL]) -> Void = {_ in}
 
