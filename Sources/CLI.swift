@@ -1,5 +1,6 @@
 import ArgumentParser
 import Foundation
+import FSDiffStream
 
 @main
 struct CLI: ParsableCommand {
@@ -39,8 +40,9 @@ struct CLI: ParsableCommand {
   }
 
   func watch() {
-    Watcher(url:Project.source!) {urls in
-      guard !urls
+    FSDiffStream(Project.source!) { diff in
+      guard !diff
+        .map({ $0.url })
         .filter({guard Project.sourceContainsTarget else {return true}
           return !$0.absoluteString.contains(Project.target!.absoluteString)})
         .isEmpty

@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="apple-mobile-web-app-title" content="Alternator" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="firebrick" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-title" content="Alternator">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="firebrick">
     <title>Alternator</title>
-    <link rel="icon" href="assets/images/favicon.ico" />
-    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
-    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="assets/styles.css">
   </head>
   <body>
     <header>
-      <h1>Alternator</h1>
-      <small>
-        <strong>al·ter·na·tor:</strong>
-        A device that converts mechanical energy to electrical energy.
-      </small>
-      <p>
-        A CLI tool for building static websites on your Mac. Layouts, includes,
-        and variables in HTML, CSS, and JS. Markdown built-in. Localhost server
-        optional.
-      </p>
-      <a href="downloads/alternator-2.0.0.pkg">Download v2</a>
-    </header>
+  <h1>Alternator</h1>
+  <small>
+    <strong>al·ter·na·tor:</strong>
+    A device that converts mechanical energy to electrical energy.
+  </small>
+  <p>
+    A CLI tool for building static websites on your Mac.
+    Layouts, includes, and variables in HTML, CSS, and JS.
+    Markdown built-in. Localhost server optional.
+  </p>
+   <a href="downloads/alternator-2.0.0.pkg">Download v2</a>
+</header>
 
-    <main>
-      <h2>Getting Started</h2>
-      <pre><code class="language-shell">~/website % alternator --help
+<main>
+  <h2>Getting Started</h2>
+<pre><code class="language-shell">~/website % alternator --help
 USAGE: alternator &lt;source&gt; &lt;target&gt; [--port &lt;port&gt;]
 
 ARGUMENTS:
@@ -40,65 +40,60 @@ OPTIONS:
   --version               Show the version.
   -h, --help              Show help information.
 </code></pre>
-      <p>
-        The <code>alternator</code> command builds your
-        <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>:
-      </p>
-      <pre><code class="language-shell">~/website % alternator path/to/source path/to/target
+<p>
+  The <code>alternator</code> command builds your
+  <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>:
+</p>
+<pre><code class="language-shell">~/website % alternator path/to/source path/to/target
 </code></pre>
-      <p>
-        Add a <code>--port</code> to make <code>&lt;target&gt;</code> available
-        on localhost:
-      </p>
-      <pre><code class="language-shell">~/website %  alternator path/to/source path/to/target --port 8080
+<p>
+  Add a <code>--port</code> to make <code>&lt;target&gt;</code> available on
+  localhost:
+</p>
+<pre><code class="language-shell">~/website %  alternator path/to/source path/to/target --port 8080
 [watch] watching path/to/source for changes
 [serve] serving path/to/target on http://localhost:8080
 ^c to stop
 </code></pre>
-      <h3>Pro Tips</h3>
-      <ul>
-        <li>
-          <code>&lt;source&gt;</code> changes auto-build while the server is
-          running.
-        </li>
-        <li>
-          Files whose names start with <code>!</code> will <em>not</em> be
-          written to <code>&lt;target&gt;</code>.
-        </li>
-        <li>
-          Markdown files are automatically converted to HTML files:<br />
-          <code>path/to/source/index.md</code> &rarr;
-          <code>path/to/target/index.html</code>
-        </li>
-        <li>
-          Layouts, includes, variables, and metadata work in: <br />
-          <em>.css</em>, <em>.htm</em>, <em>.html</em>, <em>.js</em>,
-          <em>.md</em>, <em>.rss</em>, <em>.svg</em>, <em>.txt</em>, and
-          <em>.xml</em>. <br />
-          All other file types are copied unchanged to
-          <code>&lt;target&gt;</code>.
-        </li>
-        <li>Dotfiles are completely ignored.</li>
-      </ul>
+<h3>Pro Tips</h3>
+<ul>
+  <li>
+    <code>&lt;source&gt;</code> changes auto-build while the server is running.
+  </li>
+  <li>
+    Files whose names start with <code>!</code> will <em>not</em> be written to
+    <code>&lt;target&gt;</code>.
+  </li>
+  <li>
+    Markdown files are automatically converted to HTML files:<br />
+    <code>path/to/source/index.md</code> &rarr;
+    <code>path/to/target/index.html</code>
+  </li>
+  <li>
+    Layouts, includes, variables, and metadata work in: <br />
+    <em>.css</em>, <em>.htm</em>, <em>.html</em>, <em>.js</em>, <em>.md</em>,
+    <em>.rss</em>, <em>.svg</em>, <em>.txt</em>, and <em>.xml</em>. <br />
+    All other file types are copied unchanged to <code>&lt;target&gt;</code>.
+  </li>
+  <li>Dotfiles are completely ignored.</li>
+</ul>
 
-      <h2>Layouts</h2>
-      <p>Specify a layout with the <code>#layout</code> metadata key.</p>
-      <p>
-        Any file with a <code>#content</code> comment can be used as a layout.
-      </p>
-      <blockquote>
-        <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">---
+  <h2>Layouts</h2>
+<p>Specify a layout with the <code>#layout</code> metadata key.</p>
+<p>Any file with a <code>#content</code> comment can be used as a layout.</p>
+<blockquote>
+  <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">---
 #layout: !layout.html
 ---
 &lt;h1&gt;Welcome&lt;/h1&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Alternator&lt;/title&gt;
@@ -108,10 +103,10 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Alternator&lt;/title&gt;
@@ -122,34 +117,34 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <h3>Pro Tips</h3>
-      <ul>
-        <li>
-          <code>#layout</code> and <code>#include</code> paths are relative to
-          <code>&lt;source&gt;</code>.
-        </li>
-      </ul>
+<h3>Pro Tips</h3>
+<ul>
+  <li>
+    <code>#layout</code> and <code>#include</code> paths are relative to
+    <code>&lt;source&gt;</code>.
+  </li>
+</ul>
 
-      <h2>Includes</h2>
-      <p>Use an <code>#include</code> comment to include another file.</p>
-      <blockquote>
-        <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">---
+  <h2>Includes</h2>
+<p>Use an <code>#include</code> comment to include another file.</p>
+<blockquote>
+  <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">---
 #layout: !layout.html
 ---
 &lt;!-- #include !header.html --&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Include</strong> <em>path/to/source/!header.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;h1&gt;Welcome&lt;/h1&gt;
+<blockquote>
+  <p><strong>Include</strong> <em>path/to/source/!header.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;h1&gt;Welcome&lt;/h1&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Alternator&lt;/title&gt;
@@ -159,10 +154,10 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Alternator&lt;/title&gt;
@@ -173,42 +168,38 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <h3>Pro Tips</h3>
-      <ul>
-        <li>Included files can have their own layouts.</li>
-        <li>
-          <code>#include</code> arguments override the included file's
-          metadata:<br /><code
-            >&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code
-          >
-        </li>
-      </ul>
+<h3>Pro Tips</h3>
+<ul>
+  <li>Included files can have their own layouts.</li>
+  <li>
+    <code>#include</code> arguments override the included file's metadata:<br /><code
+      >&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code
+    >
+  </li>
+</ul>
 
-      <h2>Variables</h2>
-      <p>
-        Define variables with <code>@</code> symbols and render them in
-        comments.
-      </p>
-      <p>Assign values in metatdata or as <code>#include</code> arguments.</p>
-      <blockquote>
-        <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">---
+  <h2>Variables</h2>
+<p>Define variables with <code>@</code> symbols and render them in comments.</p>
+<p>Assign values in metatdata or as <code>#include</code> arguments.</p>
+<blockquote>
+  <p><strong>Source</strong> <em>path/to/source/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">---
 #layout: !layout.html
 @siteTitle: Alternator
 ---
 &lt;!-- #include !header.html @pageTitle: Welcome --&gt;
 &lt;p&gt;Hello, world!&lt;/p&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Include</strong> <em>path/to/source/!header.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;h1&gt;&lt;!-- @pageTitle --&gt;&lt;/h1&gt;
+<blockquote>
+  <p><strong>Include</strong> <em>path/to/source/!header.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;h1&gt;&lt;!-- @pageTitle --&gt;&lt;/h1&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Layout</strong> <em>path/to/source/!layout.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;&lt;!-- @siteTitle --&gt;&lt;/title&gt;
@@ -218,10 +209,10 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <blockquote>
-        <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
-      </blockquote>
-      <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+<blockquote>
+  <p><strong>Rendered</strong> <em>path/to/target/index.html</em></p>
+</blockquote>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Alternator&lt;/title&gt;
@@ -232,24 +223,25 @@ OPTIONS:
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-      <h3>Pro Tips</h3>
-      <ul>
-        <li>
-          Use <code>??</code> to assign a default value:
-          <code>&lt;!-- @foo ?? bar --&gt;</code>
-        </li>
-        <li>
-          Any comment syntax works: <code>&lt;!-- @foo --></code>,
-          <code>/* @foo */</code>, or <code>// @foo</code>
-        </li>
-      </ul>
-    </main>
+<h3>Pro Tips</h3>
+<ul>
+  <li>
+    Use <code>??</code> to assign a default value:
+    <code>&lt;!-- @foo ?? bar --&gt;</code>
+  </li>
+  <li>
+    Any comment syntax works: <code>&lt;!-- @foo --></code>,
+    <code>/* @foo */</code>, or <code>// @foo</code>
+  </li>
+</ul>
 
-    <footer>
-      <p>
-        <a href="https://github.com/jarrodtaylor/alternator">View Source</a>
-        By <a href="https://jarrodtaylor.me/readme">Jarrod Taylor</a>
-      </p>
-    </footer>
+</main>
+
+<footer>
+  <p>
+    <a href="https://github.com/jarrodtaylor/alternator">View Source</a>
+    By <a href="https://jarrodtaylor.me/readme">Jarrod Taylor</a>
+  </p>
+</footer>
   </body>
 </html>

@@ -1,6 +1,15 @@
 {
-  "originHash" : "25c10156f3e730c124632a66c15b19d3cbeed37684ddf520135b0881ffd8ab81",
+  "originHash" : "49fc0bb58ae0fdad1fe685b872e12b299efeb1a028a2fe44fbf1427f343f6e7a",
   "pins" : [
+    {
+      "identity" : "fs-diff-stream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jarrodtaylor/fs-diff-stream.git",
+      "state" : {
+        "revision" : "056fa7c7bfb6025ce63c9f6fd02af1561b68e222",
+        "version" : "1.0.0"
+      }
+    },
     {
       "identity" : "ink",
       "kind" : "remoteSourceControl",
