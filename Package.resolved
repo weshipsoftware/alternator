@@ -1,5 +1,5 @@
 {
-  "originHash" : "79ffe08e88b08ce9cff018776b16a0f4841c3b0ccce7fc693013bf4c49f89cb4",
+  "originHash" : "c1500227f9038b6d1a9e5fe4267e933d34dea73b5c5eb8f42a0abedbc2bdacb6",
   "pins" : [
     {
       "identity" : "fs-diff-stream",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "266dac500bded844a56771bc1fb2abaa60f6e7b6",
         "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "restless",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jarrodtaylor/RESTless",
+      "state" : {
+        "revision" : "a01d2f84b7107a4191e5c01bbb2e11125629c47f",
+        "version" : "1.0.0"
       }
     },
     {

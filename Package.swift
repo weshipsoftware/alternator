@@ -8,6 +8,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
     .package(url: "https://github.com/jarrodtaylor/fs-diff-stream", from: "1.0.0"),
+    .package(url: "https://github.com/jarrodtaylor/RESTless",       from: "1.0.0"),
     .package(url: "https://github.com/johnsundell/ink",             from: "0.6.0"),
     .package(url: "https://github.com/simonbs/Prettier",            from: "0.1.0")
   ],
@@ -21,7 +22,8 @@ let package = Package(
         .product(name: "Prettier",        package: "Prettier"),
         .product(name: "PrettierBabel",   package: "Prettier"),
         .product(name: "PrettierHTML",    package: "Prettier"),
-        .product(name: "PrettierPostCSS", package: "Prettier")
+        .product(name: "PrettierPostCSS", package: "Prettier"),
+        .product(name: "RESTless",        package: "RESTless")
       ]
     )
   ]

@@ -1,6 +1,7 @@
 import ArgumentParser
 import Foundation
 import FSDiffStream
+import RESTless
 
 @main
 struct CLI: ParsableCommand {
@@ -53,7 +54,7 @@ struct CLI: ParsableCommand {
   }
 
   func serve(_ port: UInt16) {
-    Server(path:Project.target!.masked, port:port) {(request, response, error) in
+    RESTless(path:Project.target!.masked, port:port) {(request, response, error) in
       var message:[String] = ["[serve]"]
       if let request  {message.append(request.path)}
       if let response {message.append("(\(response.status.rawValue) \(response.status))")}
