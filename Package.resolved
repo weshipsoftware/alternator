@@ -1,5 +1,5 @@
 {
-  "originHash" : "49fc0bb58ae0fdad1fe685b872e12b299efeb1a028a2fe44fbf1427f343f6e7a",
+  "originHash" : "79ffe08e88b08ce9cff018776b16a0f4841c3b0ccce7fc693013bf4c49f89cb4",
   "pins" : [
     {
       "identity" : "fs-diff-stream",
@@ -22,7 +22,7 @@
     {
       "identity" : "prettier",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:simonbs/Prettier.git",
+      "location" : "https://github.com/simonbs/Prettier",
       "state" : {
         "revision" : "266dac500bded844a56771bc1fb2abaa60f6e7b6",
         "version" : "0.2.1"
