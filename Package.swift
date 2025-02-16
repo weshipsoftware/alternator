@@ -24,7 +24,10 @@ let package = Package(
         .product(name: "PrettierHTML",    package: "Prettier"),
         .product(name: "PrettierPostCSS", package: "Prettier"),
         .product(name: "RESTless",        package: "RESTless")
-      ]
+      ],
+      path: ".",
+      exclude: ["docs/", "README.md", "LICENSE.md"],
+      sources: ["Alternator.swift"]
     )
   ]
 )
