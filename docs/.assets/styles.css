@@ -1,32 +1,9 @@
-@font-face {
-  font-family: "text"; font-style: normal; font-weight: normal;
-  src: url("../assets/fonts/normal.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "text"; font-style: normal; font-weight: bold;
-  src: url("../assets/fonts/bold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "text"; font-style: italic; font-weight: normal;
-  src: url("../assets/fonts/italic.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "text"; font-style: normal; font-weight: 300;
-  src: url("../assets/fonts/lighter.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "code"; font-style: normal; font-weight: bold;
-  src: url("../assets/fonts/cli.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "code"; font-style: normal; font-weight: normal;
-  src: url("../assets/fonts/code.woff2") format("woff2");
-}
+@font-face {font-family: "text"; font-style: normal; font-weight: normal; src: url("/.assets/fonts/normal.woff2")  format("woff2");}
+@font-face {font-family: "text"; font-style: normal; font-weight: bold;   src: url("/.assets/fonts/bold.woff2")    format("woff2");}
+@font-face {font-family: "text"; font-style: italic; font-weight: normal; src: url("/.assets/fonts/italic.woff2")  format("woff2");}
+@font-face {font-family: "text"; font-style: normal; font-weight: 300;    src: url("/.assets/fonts/lighter.woff2") format("woff2");}
+@font-face {font-family: "code"; font-style: normal; font-weight: bold;   src: url("/.assets/fonts/cli.woff2")     format("woff2");}
+@font-face {font-family: "code"; font-style: normal; font-weight: normal; src: url("/.assets/fonts/code.woff2")    format("woff2");}
 
 :root {
   --font-text: "text", system-ui, sans-serif;
@@ -67,7 +44,7 @@ header h1 {
 }
 
 h1::before {
-  content: url('../assets/images/icon.svg');
+  content: url('/.assets/images/icon.svg');
   display: inline-block;
   margin-right: .5rem;
   width: 5rem;
@@ -118,7 +95,7 @@ header a {
 }
 
 header a::before {
-  content: url('../assets/images/download.svg');
+  content: url('/.assets/images/download.svg');
   display: inline-block;
   margin-right: .5rem;
   width: 1.25rem;

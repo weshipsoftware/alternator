@@ -2,11 +2,11 @@
   "actions" : {
     "build" : {
       "enabled" : true,
-      "script" : "swift run alternator docs\/src docs"
+      "script" : "swift run alternator docs\/.src docs"
     },
     "run" : {
       "enabled" : true,
-      "script" : "swift run alternator docs\/src docs -p 8080"
+      "script" : "swift run alternator docs\/.src docs -p 8080"
     }
   }
 }
