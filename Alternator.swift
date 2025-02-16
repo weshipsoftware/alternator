@@ -8,8 +8,6 @@ import PrettierHTML
 import PrettierPostCSS
 import RESTless
 
-// TODO: Separate watch and serve.
-
 @main
 struct CLI: ParsableCommand {
   static let configuration = CommandConfiguration(
@@ -21,7 +19,10 @@ struct CLI: ParsableCommand {
   @Argument(help: "Relative path to your target directory.", completion: .directory)
   var target: String
 
-  @Option(name: .shortAndLong, help: "Port for the localhost server.")
+  @Flag(name: .shortAndLong, help: "Rebuild <source> as you make changes.")
+  var watch = false
+
+  @Option(name: .shortAndLong, help: "Serve <target> on localhost:<port>.")
   var port: UInt16?
 
   func validate() throws {
@@ -44,34 +45,13 @@ struct CLI: ParsableCommand {
   mutating func run() throws {
     Project.build()
 
-    if let port = port {
-      FSDiffStream(Project.source!) { diff in
-        guard !diff
-          .map({$0.url})
-          .filter({
-            guard Project.sourceContainsTarget else {return true}
-            return !$0.absoluteString.contains(Project.target!.absoluteString)})
-          .isEmpty
-        else {return}
+    if watch == true
+      {Project.stream()}
 
-        Project.build()
-      }
+    if let port = port
+      {Project.serve(port: port)}
 
-      CLI.log("[watch] watching \(Project.source!.masked) for changes")
-
-      RESTless(path: Project.target!.masked, port: port) {(request, response, error) in
-        var message: [String] = ["[serve]"]
-        if let request
-          {message.append(request.path)}
-        if let response
-          {message.append("(\(response.status.rawValue) \(response.status))")}
-        if let error
-          {message.append("Error: \(error)")}
-        CLI.log(message.joined(separator: " "))
-      }
-
-      CLI.log("[serve] serving \(Project.target!.masked) at http://localhost:\(port)")
-
+    if watch == true || port != nil {
       CLI.log("^c to stop")
       RunLoop.current.run()
     }
@@ -142,6 +122,33 @@ struct Project {
       .filter {!$0.isDirectory}
       .map {File(source: $0)}
       .first(where: {$0.ref == ref})
+  }
+
+  static func serve(port: UInt16) {
+    RESTless(path: target!.masked, port: port) {(req, res, err) in
+      var message: [String] = ["[serve]"]
+      if let req {message.append(req.path)}
+      if let res {message.append("(\(res.status.rawValue) \(res.status))")}
+      if let err {message.append("Error: \(err)")}
+      CLI.log(message.joined(separator: " "))
+    }
+
+    CLI.log("[serve] serving \(target!.masked) at http://localhost:\(port)")
+  }
+
+  static func stream() {
+    FSDiffStream(source!) { diff in
+      guard !diff
+        .map({$0.url})
+        .filter({
+          guard sourceContainsTarget else {return true}
+          return !$0.absoluteString.contains(target!.absoluteString)})
+        .isEmpty
+      else {return}
+      build()
+    }
+
+    CLI.log("[watch] watching \(source!.masked) for changes")
   }
 }
 
