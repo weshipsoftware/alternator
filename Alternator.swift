@@ -1,17 +1,17 @@
 import ArgumentParser
 import Foundation
 import Ink
-import FSDiffStream
-import Prettier
+import FSDiffStream // Bring in because when else do you use this?
+import Prettier // TODO: Use it compressed from Ink?
 import PrettierBabel
 import PrettierHTML
 import PrettierPostCSS
-import RESTless
+import RESTless // Bring in because when else do you use this?
 
 @main
 struct CLI: ParsableCommand {
   static let configuration = CommandConfiguration(
-    commandName: "alternator", version: "2.0.0")
+    commandName: "alternator", version: "2.0.0") // 2.1 And read this into the distro command
 
   @Argument(help: "Relative path to your source directory.", completion: .directory)
   var source: String
@@ -45,11 +45,8 @@ struct CLI: ParsableCommand {
   mutating func run() throws {
     Project.build()
 
-    if watch == true
-      {Project.stream()}
-
-    if let port = port
-      {Project.serve(port: port)}
+    if watch == true   { Project.stream()          }
+    if let port = port { Project.serve(port: port) }
 
     if watch == true || port != nil {
       CLI.log("^c to stop")
@@ -62,6 +59,7 @@ struct CLI: ParsableCommand {
 }
 
 struct Project {
+  // QUESTION: Can these not be optional if they're set in the CLI validator?
   nonisolated(unsafe) static var source: URL?
   nonisolated(unsafe) static var target: URL?
 
@@ -80,7 +78,7 @@ struct Project {
         .map {File(source: $0)}
 
       try manifest
-        .filter {$0.source.lastPathComponent.prefix(1) != "!"}
+        .filter {!$0.source.isIgnored}
         .filter {try $0.isModified}
         .forEach {try $0.build()}
 
@@ -88,6 +86,7 @@ struct Project {
         .filter {!$0.isDirectory}
         .filter {!manifest.map({$0.source.absoluteString}).contains($0.absoluteString)}
         .filter {!manifest.map({$0.target.absoluteString}).contains($0.absoluteString)}
+        .filter {!$0.isIgnored}
         .forEach {
           CLI.log("[build] deleting \($0.masked)")
           try FileManager.default.removeItem(at:$0)}
@@ -98,6 +97,7 @@ struct Project {
           !targetContainsSource
           ? true
           : !$0.absoluteString.contains(source!.absoluteString)}
+        .filter {!$0.isIgnored}
         .filter {try FileManager.default
           .contentsOfDirectory(atPath: $0.path(percentEncoded: false))
           .isEmpty}
@@ -451,6 +451,12 @@ extension URL {
 
   var isDirectory: Bool
     {(try? resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true}
+
+  var isIgnored: Bool {
+    path()
+      .split(separator: "/")
+      .contains(where: {component in component.first == "!"})
+  }
 
   var list: [URL] {
     guard exists else {return []}
