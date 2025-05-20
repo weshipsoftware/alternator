@@ -1,15 +1,6 @@
 {
-  "originHash" : "c1500227f9038b6d1a9e5fe4267e933d34dea73b5c5eb8f42a0abedbc2bdacb6",
+  "originHash" : "68f6f8ff0b6bfb0f1a1a3cfc67d5da13522f146debdb3114c2b587d799d90e9d",
   "pins" : [
-    {
-      "identity" : "fs-diff-stream",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jarrodtaylor/fs-diff-stream.git",
-      "state" : {
-        "revision" : "056fa7c7bfb6025ce63c9f6fd02af1561b68e222",
-        "version" : "1.0.0"
-      }
-    },
     {
       "identity" : "ink",
       "kind" : "remoteSourceControl",
@@ -17,24 +8,6 @@
       "state" : {
         "revision" : "bcc9f219900a62c4210e6db726035d7f03ae757b",
         "version" : "0.6.0"
-      }
-    },
-    {
-      "identity" : "prettier",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/simonbs/Prettier",
-      "state" : {
-        "revision" : "266dac500bded844a56771bc1fb2abaa60f6e7b6",
-        "version" : "0.2.1"
-      }
-    },
-    {
-      "identity" : "restless",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jarrodtaylor/RESTless",
-      "state" : {
-        "revision" : "a01d2f84b7107a4191e5c01bbb2e11125629c47f",
-        "version" : "1.0.0"
       }
     },
     {
