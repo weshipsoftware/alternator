@@ -3,19 +3,17 @@
 import PackageDescription
 
 let package = Package(
-  name: "alternator",
-  platforms: [.macOS(.v13)],
-  dependencies: [
-    .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
-    .package(url: "https://github.com/johnsundell/ink",             from: "0.6.0")
-  ],
-  targets: [
-    .executableTarget(
-      name: "alternator",
-      dependencies: [
-        .product(name: "ArgumentParser",  package: "swift-argument-parser"),
-        .product(name: "Ink",             package: "ink")
-      ]
-    )
-  ]
-)
+	name: "alternator",
+	platforms: [.macOS(.v13)],
+	dependencies: [
+		.package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
+		.package(url: "https://github.com/johnsundell/ink",             from: "0.6.0")],
+	targets: [
+		.executableTarget(
+			name: "alternator",
+			dependencies: [
+				.product(name: "ArgumentParser",  package: "swift-argument-parser"),
+				.product(name: "Ink",             package: "ink")],
+			path: ".",
+			exclude: ["docs/", "README.md", "LICENSE.md"],
+			sources: ["Alternator.swift"])])
