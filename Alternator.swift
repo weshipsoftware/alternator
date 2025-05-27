@@ -31,13 +31,13 @@ struct Alternator: ParsableCommand {
 		Project.tgt = URL(string: target.ref, relativeTo: URL.currentDirectory())
 
 		guard Project.src!.exists else
-			{ throw ValidationError("<source> does not exist.") }
+			{throw ValidationError("<source> does not exist.")}
 		guard Project.src!.isDirectory else
-			{ throw ValidationError("<source> must be a directory.") }
+			{throw ValidationError("<source> must be a directory.")}
 		guard Project.src!.masked != Project.tgt!.masked else
-			{ throw ValidationError("<source> and <target> cannot be the same.") }
+			{throw ValidationError("<source> and <target> cannot be the same.")}
 		guard !Project.tgt!.exists || Project.tgt!.isDirectory else
-			{ throw ValidationError("<target> must be a directory.") }
+			{throw ValidationError("<target> must be a directory.")}
 	}
 }
 
