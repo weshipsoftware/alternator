@@ -120,6 +120,11 @@ struct File {
         .components(separatedBy: .newlines)
         .map {$0.trimmingCharacters(in: .whitespacesAndNewlines)}
         .joined()
+        .replacingOccurrences(of: ": ", with: ":")
+        .replacingOccurrences(of: "{ ", with: "{")
+        .replacingOccurrences(of: " {", with: "{")
+        .replacingOccurrences(of: "} ", with: "}")
+        .replacingOccurrences(of: " }", with: "}")
     }
 
     return text
