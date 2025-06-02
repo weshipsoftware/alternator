@@ -13,7 +13,4 @@ let package = Package(
 			name: "alternator",
 			dependencies: [
 				.product(name: "ArgumentParser",  package: "swift-argument-parser"),
-				.product(name: "Ink",             package: "ink")],
-			path: ".",
-			exclude: ["docs/", "README.md", "LICENSE.md"],
-			sources: ["Alternator.swift"])])
+				.product(name: "Ink",             package: "ink")])])
