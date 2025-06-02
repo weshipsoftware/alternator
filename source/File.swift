@@ -111,11 +111,11 @@ struct File {
           {text = text.replacingFirst(of: match, with: value as String)}
     }
 
-    for match in text
-      .find(#"((<!--|/\*|/\*\*)\s*[\s\S]*?(-->|\*/)|//[^\S\r\n]*[^\n]*)"#)
-        {text = text.replacingFirst(of: match, with: "")}
-
     if ["css", "js"].contains(src.pathExtension) {
+      for match in text
+        .find(#"((<!--|/\*|/\*\*)\s*[\s\S]*?(-->|\*/)|//[^\S\r\n]*[^\n]*)"#)
+          {text = text.replacingFirst(of: match, with: "")}
+
       text = text
         .components(separatedBy: .newlines)
         .map {$0.trimmingCharacters(in: .whitespacesAndNewlines)}
