@@ -10,7 +10,8 @@
     },
     "run" : {
       "enabled" : true,
-      "script" : "swift run alternator --help"
+      "script" : "swift run alternator fixtures docs -wp 8080"
     }
-  }
+  },
+  "openLogOnRun" : "fail"
 }

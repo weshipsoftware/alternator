@@ -1,0 +1,18 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "path" : "scripts\/build.sh"
+    },
+    "clean" : {
+      "enabled" : true,
+      "script" : "VERSION=`swift run alternator --version`\nrm alternator-$VERSION.pkg"
+    },
+    "run" : {
+      "enabled" : true,
+      "path" : "scripts\/notarize.sh"
+    }
+  },
+  "buildBeforeRunning" : true,
+  "openLogOnRun" : "start"
+}
