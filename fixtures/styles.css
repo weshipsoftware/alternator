@@ -42,9 +42,7 @@ html {
 
 body {
   margin: 2.5rem auto;
-  width: calc(768px - 4rem);
-  /* padding: 0 2rem; */
-  /* width: 22.5rem; */
+  width: calc(768px - 3rem);
 }
 
 code {
