@@ -1,17 +1,6 @@
 ---
 #layout: !layout.html
 ---
-# Alternator⚡
-
-**al**·**ter**·**na**·**tor**:
-A device that converts mechanical energy to electrical energy.
-
-A CLI tool for building static websites on your Mac.
-Layouts, includes, and variables in HTML, CSS, and JS.
-Markdown built-in. Localhost server optional.
-
-[⤓ Download](!downloads/alternator-2.1.0.pkg) Version 2.1.0
-
 ## Getting Started
 
 The alternator command builds your `<source>` files into `<target>`.
@@ -77,9 +66,4 @@ Assign values in metatdata or as `#include` arguments.
 ### Pro Tips
 
 - Use `??` to assign a default value: `<!-- @foo ?? bar -->`
-- Any comment syntax works:<br />
-  `<!-- @foo -->`, `/* @foo */`, or `// @foo`
-
----
-
-© 🚀 [We Ship Software](https://weshipsoftware.com)
+- Any comment syntax works: `<!-- @foo -->`, `/* @foo */`, or `// @foo`

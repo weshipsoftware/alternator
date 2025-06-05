@@ -2,14 +2,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="#1B1D1F">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Alternator">
   <meta name="application-name" content="Alternator">
   <meta name="description" content="...">
   <meta name="generator" content="alternator">
   <meta name="keywords" content="...">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#1B1D1F">
+  <meta name="theme-color" content="black">
   <meta name="viewport" content="width=512">
   <link rel="apple-touch-icon" href="/!assets/touch-icon.png">
   <link rel="icon" sizes="192x192" href="/!assets/touch-icon.png">
@@ -17,12 +17,34 @@
   <link rel="preload" type="font/woff2" as="font" crossorigin
     href="/!assets/Concourse.woff2">
   <link rel="preload" type="font/woff2" as="font" crossorigin
-    href="/!assets/DankMono.woff2">
-  <link rel="preload" type="font/woff2" as="font" crossorigin
     href="/!assets/Hyperlegible.woff2">
+  <link rel="preload" type="font/woff2" as="font" crossorigin
+    href="/!assets/HyperlegibleMono.woff2">
+  <link rel="preload" type="font/woff2" as="font" crossorigin
+    href="/!assets/Zarid.woff2">
   <link rel="stylesheet" href="/styles.css">
   <title>Alternator</title>
 </head>
 <body>
-  <h1>Alternator⚡</h1><p><strong>al</strong>·<strong>ter</strong>·<strong>na</strong>·<strong>tor</strong>: A device that converts mechanical energy to electrical energy.</p><p>A CLI tool for building static websites on your Mac. Layouts, includes, and variables in HTML, CSS, and JS. Markdown built-in. Localhost server optional.</p><p><a href="!downloads/alternator-2.1.0.pkg">⤓ Download</a> Version 2.1.0</p><h2>Getting Started</h2><p>The alternator command builds your <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>.</p><script src="https://gist.github.com/jarrodtaylor/979ce70ee106d472a2dbf6b88a8cb378.js"></script><p>Add <code>--watch</code> to automatically build <code>&lt;source&gt;</code> changes on save and add <code>--port</code> to serve <code>&lt;target&gt;</code> on localhost.</p><script src="https://gist.github.com/jarrodtaylor/1e01d425e1d896f5253a1fb3a868b3ea.js"></script><h3>Pro Tips</h3><ul><li>The localhost server uses clean urls.</li><li>File/folder names starting with <code>!</code> will not be built to <code>&lt;target&gt;</code>.</li><li>Markdown files are automatically converted to HTML files:<br /> <code>path/to/source/index.md</code> → <code>path/to/target/index.html</code></li><li>Layouts, includes, variables, and metadata work in:<br /> <code>.css</code>, <code>.htm</code>, <code>.html</code>, <code>.js</code>, <code>.md</code>, <code>.rss</code>, <code>.svg</code>, <code>.txt</code>, and <code>.xml</code>.<br /> All other file types are copied unchanged to <code>&lt;target&gt;</code>.</li><li><code>&lt;target&gt;/404.html</code> will be rendered on any request that's not found.</li></ul><h2>Layouts</h2><p>Specify a layout with the <code>#layout</code> metadata key.</p><p>Any file with a <code>#content</code> comment can be used as a layout.</p><script src="https://gist.github.com/jarrodtaylor/7275044de795bb8cf55ec4f469e59070.js"></script><script src="https://gist.github.com/jarrodtaylor/c3a2b1a96efdb2e9dde22320aa15e6a1.js"></script><script src="https://gist.github.com/jarrodtaylor/ea8a5ee4144ca7aa8ced4e0347a89290.js"></script><h3>Pro Tips</h3><ul><li><code>#layout</code> and <code>#include</code> paths are relative to <code>&lt;source&gt;</code>.</li></ul><h2>Includes</h2><p>Use an <code>#include</code> comment to include another file.</p><script src="https://gist.github.com/jarrodtaylor/a7dd36bc4c7344bd99a748f1b1311df9.js"></script><script src="https://gist.github.com/jarrodtaylor/b0fd53b3be573001f7db558b88c3ab6f.js"></script><script src="https://gist.github.com/jarrodtaylor/a74333b4004271ffcf9c63d3d05b38ae.js"></script><script src="https://gist.github.com/jarrodtaylor/44eca352d4bf967791023d0e98263f9a.js"></script><h3>Pro Tips</h3><ul><li>Included files can have their own layouts.</li><li><code>#include</code> arguments override the included file's metadata:<br /> <code>&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code></li></ul><h2>Variables</h2><p>Define variables with <code>@</code> symbols and render them in comments.</p><p>Assign values in metatdata or as <code>#include</code> arguments.</p><script src="https://gist.github.com/jarrodtaylor/887e91186e538519fbff65a708f8e8e0.js"></script><script src="https://gist.github.com/jarrodtaylor/c312f3d02e27cd2ff360636f40055388.js"></script><script src="https://gist.github.com/jarrodtaylor/84b2e69f3ac7753d92c2ccac830a34da.js"></script><script src="https://gist.github.com/jarrodtaylor/57ef98102bdfe5049a52a287fc41d9a8.js"></script><h3>Pro Tips</h3><ul><li>Use <code>??</code> to assign a default value: <code>&lt;!-- @foo ?? bar --&gt;</code></li><li>Any comment syntax works:<br /> <code>&lt;!-- @foo --&gt;</code>, <code>/* @foo */</code>, or <code>// @foo</code></li></ul><hr><p>© 🚀 <a href="https://weshipsoftware.com">We Ship Software</a></p>
+  <header>
+    <h1>Alternator⚡</h1>
+    <p>
+      A CLI tool for building static websites on your Mac.
+      Layouts, includes, and variables in HTML, CSS, and JS.
+      Markdown built-in. Localhost server optional.
+    </p>
+    <p>
+      <a href="!downloads/alternator-2.1.0.pkg">⤓ Download </a>
+      Version 2.1.0
+    </p>
+  </header>
+  <main>
+    <article>
+      <h2>Getting Started</h2><p>The alternator command builds your <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>.</p><script src="https://gist.github.com/jarrodtaylor/979ce70ee106d472a2dbf6b88a8cb378.js"></script><p>Add <code>--watch</code> to automatically build <code>&lt;source&gt;</code> changes on save and add <code>--port</code> to serve <code>&lt;target&gt;</code> on localhost.</p><script src="https://gist.github.com/jarrodtaylor/1e01d425e1d896f5253a1fb3a868b3ea.js"></script><h3>Pro Tips</h3><ul><li>The localhost server uses clean urls.</li><li>File/folder names starting with <code>!</code> will not be built to <code>&lt;target&gt;</code>.</li><li>Markdown files are automatically converted to HTML files:<br /> <code>path/to/source/index.md</code> → <code>path/to/target/index.html</code></li><li>Layouts, includes, variables, and metadata work in:<br /> <code>.css</code>, <code>.htm</code>, <code>.html</code>, <code>.js</code>, <code>.md</code>, <code>.rss</code>, <code>.svg</code>, <code>.txt</code>, and <code>.xml</code>.<br /> All other file types are copied unchanged to <code>&lt;target&gt;</code>.</li><li><code>&lt;target&gt;/404.html</code> will be rendered on any request that's not found.</li></ul><h2>Layouts</h2><p>Specify a layout with the <code>#layout</code> metadata key.</p><p>Any file with a <code>#content</code> comment can be used as a layout.</p><script src="https://gist.github.com/jarrodtaylor/7275044de795bb8cf55ec4f469e59070.js"></script><script src="https://gist.github.com/jarrodtaylor/c3a2b1a96efdb2e9dde22320aa15e6a1.js"></script><script src="https://gist.github.com/jarrodtaylor/ea8a5ee4144ca7aa8ced4e0347a89290.js"></script><h3>Pro Tips</h3><ul><li><code>#layout</code> and <code>#include</code> paths are relative to <code>&lt;source&gt;</code>.</li></ul><h2>Includes</h2><p>Use an <code>#include</code> comment to include another file.</p><script src="https://gist.github.com/jarrodtaylor/a7dd36bc4c7344bd99a748f1b1311df9.js"></script><script src="https://gist.github.com/jarrodtaylor/b0fd53b3be573001f7db558b88c3ab6f.js"></script><script src="https://gist.github.com/jarrodtaylor/a74333b4004271ffcf9c63d3d05b38ae.js"></script><script src="https://gist.github.com/jarrodtaylor/44eca352d4bf967791023d0e98263f9a.js"></script><h3>Pro Tips</h3><ul><li>Included files can have their own layouts.</li><li><code>#include</code> arguments override the included file's metadata:<br /> <code>&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code></li></ul><h2>Variables</h2><p>Define variables with <code>@</code> symbols and render them in comments.</p><p>Assign values in metatdata or as <code>#include</code> arguments.</p><script src="https://gist.github.com/jarrodtaylor/887e91186e538519fbff65a708f8e8e0.js"></script><script src="https://gist.github.com/jarrodtaylor/c312f3d02e27cd2ff360636f40055388.js"></script><script src="https://gist.github.com/jarrodtaylor/84b2e69f3ac7753d92c2ccac830a34da.js"></script><script src="https://gist.github.com/jarrodtaylor/57ef98102bdfe5049a52a287fc41d9a8.js"></script><h3>Pro Tips</h3><ul><li>Use <code>??</code> to assign a default value: <code>&lt;!-- @foo ?? bar --&gt;</code></li><li>Any comment syntax works: <code>&lt;!-- @foo --&gt;</code>, <code>/* @foo */</code>, or <code>// @foo</code></li></ul>
+    </article>
+  </main>
+  <footer>
+    <p>🚀 <a href="https://weshipsoftware.com">We Ship Software</a></p>
+    <p><a href="https://github.com/weshipsoftware/alternator">View Source</a></p>
+  </footer>
 </body>
