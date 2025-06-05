@@ -32,7 +32,17 @@
     --foreground: var(--light);
   }
 
-  font: 23px/1.33 Hyperlegible, sans-serif;
+  font: 16px/1.33 Hyperlegible, sans-serif;
+
+  @media (min-width: 48rem) { font-size: 17px; }
+  @media (min-width: 51rem) { font-size: 18px; }
+  @media (min-width: 54rem) { font-size: 19px; }
+  @media (min-width: 57rem) { font-size: 20px; }
+  @media (min-width: 60rem) { font-size: 21px; }
+  @media (min-width: 63rem) { font-size: 22px; }
+  @media (min-width: 66rem) { font-size: 23px; }
+  @media (min-width: 69rem) { font-size: 24px; }
+  @media (min-width: 72rem) { font-size: 25px; }
 }
 
 html {
@@ -42,7 +52,8 @@ html {
 
 body {
   margin: 2.5rem auto;
-  width: calc(768px - 3rem);
+  /* width: calc(768px - 3rem); */
+  width: 30rem;
 }
 
 code {
@@ -108,8 +119,8 @@ h2 {
 .gist {
   border-top: .2rem solid white;
   box-shadow: 0 0 1px darkslateblue;
-  margin-left: -1.5rem;
-  width: calc(100% + 3rem);
+  /* margin-left: -1.5rem; */
+  /* width: calc(100% + 3rem); */
 }
 
 #gist138479156, #gist138505142 {
