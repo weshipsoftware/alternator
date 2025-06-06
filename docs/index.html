@@ -40,11 +40,83 @@
   </header>
   <main>
     <article>
-      <h2>Getting Started</h2><p>The alternator command builds your <code>&lt;source&gt;</code> files into <code>&lt;target&gt;</code>.</p><script src="https://gist.github.com/jarrodtaylor/979ce70ee106d472a2dbf6b88a8cb378.js"></script><p>Add <code>--watch</code> to automatically build <code>&lt;source&gt;</code> changes on save and add <code>--port</code> to serve <code>&lt;target&gt;</code> on localhost.</p><script src="https://gist.github.com/jarrodtaylor/1e01d425e1d896f5253a1fb3a868b3ea.js"></script><h3>Pro Tips</h3><ul><li>The localhost server uses clean urls.</li><li>File/folder names starting with <code>!</code> will not be built to <code>&lt;target&gt;</code>.</li><li>Markdown files are automatically converted to HTML files:<br /> <code>path/to/source/index.md</code> → <code>path/to/target/index.html</code></li><li>Layouts, includes, variables, and metadata work in:<br /> <code>.css</code>, <code>.htm</code>, <code>.html</code>, <code>.js</code>, <code>.md</code>, <code>.rss</code>, <code>.svg</code>, <code>.txt</code>, and <code>.xml</code>.<br /> All other file types are copied unchanged to <code>&lt;target&gt;</code>.</li><li><code>&lt;target&gt;/404.html</code> will be rendered on any request that's not found.</li></ul><h2>Layouts</h2><p>Specify a layout with the <code>#layout</code> metadata key.</p><p>Any file with a <code>#content</code> comment can be used as a layout.</p><script src="https://gist.github.com/jarrodtaylor/7275044de795bb8cf55ec4f469e59070.js"></script><script src="https://gist.github.com/jarrodtaylor/c3a2b1a96efdb2e9dde22320aa15e6a1.js"></script><script src="https://gist.github.com/jarrodtaylor/ea8a5ee4144ca7aa8ced4e0347a89290.js"></script><h3>Pro Tips</h3><ul><li><code>#layout</code> and <code>#include</code> paths are relative to <code>&lt;source&gt;</code>.</li></ul><h2>Includes</h2><p>Use an <code>#include</code> comment to include another file.</p><script src="https://gist.github.com/jarrodtaylor/a7dd36bc4c7344bd99a748f1b1311df9.js"></script><script src="https://gist.github.com/jarrodtaylor/b0fd53b3be573001f7db558b88c3ab6f.js"></script><script src="https://gist.github.com/jarrodtaylor/a74333b4004271ffcf9c63d3d05b38ae.js"></script><script src="https://gist.github.com/jarrodtaylor/44eca352d4bf967791023d0e98263f9a.js"></script><h3>Pro Tips</h3><ul><li>Included files can have their own layouts.</li><li><code>#include</code> arguments override the included file's metadata:<br /> <code>&lt;!-- #include !file.html #layout: false @foo: bar --&gt;</code></li></ul><h2>Variables</h2><p>Define variables with <code>@</code> symbols and render them in comments.</p><p>Assign values in metatdata or as <code>#include</code> arguments.</p><script src="https://gist.github.com/jarrodtaylor/887e91186e538519fbff65a708f8e8e0.js"></script><script src="https://gist.github.com/jarrodtaylor/c312f3d02e27cd2ff360636f40055388.js"></script><script src="https://gist.github.com/jarrodtaylor/84b2e69f3ac7753d92c2ccac830a34da.js"></script><script src="https://gist.github.com/jarrodtaylor/57ef98102bdfe5049a52a287fc41d9a8.js"></script><h3>Pro Tips</h3><ul><li>Use <code>??</code> to assign a default value: <code>&lt;!-- @foo ?? bar --&gt;</code></li><li>Any comment syntax works: <code>&lt;!-- @foo --&gt;</code>, <code>/* @foo */</code>, or <code>// @foo</code></li></ul>
+      <pre><code class="language-shell">/website $ alternator --help
+USAGE: alternator &lt;source&gt; &lt;target&gt; [--watch] [--port &lt;port&gt;]
+
+ARGUMENTS:
+  &lt;source&gt;                Path to your source directory.
+  &lt;target&gt;                Path to your target directory.
+
+OPTIONS:
+  -w, --watch             Rebuild &lt;source&gt; as you save changes.
+  -p, --port &lt;port&gt;       Serve &lt;target&gt; on localhost:&lt;port&gt;.
+  --version               Show the version.
+  -h, --help              Show help information.
+</code></pre><h2>Getting Started</h2><p>Alternator works by reading the files in your <code>&lt;source&gt;</code> directory, filling in the layouts, includes, and variables, then saving the rendered files to your <code>&lt;target&gt;</code> directory for publishing.</p><pre><code class="language-shell">/website $ alternator path/to/source path/to/target
+</code></pre><p>Layouts, includes, and variables are defined in text-based <code>&lt;source&gt;</code> files using comments and metadata. More on that later.</p><p>Alternator has no directory structure requirements and simply copies the structure from <code>&lt;source&gt;</code> to <code>&lt;target&gt;</code>.</p><h3>Static Assets</h3><p>Files that can't be rendered, such as images, are considered static assets and are copied as-is from <code>&lt;source&gt;</code> to <code>&lt;target&gt;</code>.</p><h3>Ignoring Files</h3><p>File and directory names starting with a <code>.</code> or a <code>!</code> are ignored by the build process. This is useful for a few reasons:</p><ul><li>Dotfiles used for configuration are never touched by Alternator.</li><li><code>&lt;source&gt;</code> files that should <em>not</em> be published, such as layouts and includes, are not moved to <code>&lt;target&gt;</code>.</li><li>Static assets can live in <code>&lt;target&gt;</code> under a <code>!</code> directory, such as <code>!assets/img</code>, instead of being copied during the build process, reducing duplicate files.</li></ul><h3>Markdown</h3><p>Markdown files ending with <code>.md</code> are converted to HTML. The rendered files are saved to <code>&lt;target&gt;</code> as <code>.html</code> files.</p><h3>Watching for Changes</h3><p>Use the <code>--watch</code> flag to monitor <code>&lt;source&gt;</code> for changes and automatically render after each save.</p><pre><code class="language-shell">/website $ alternator path/to/source path/to/target --watch
+[watch] watching path/to/source for changes
+^c to stop
+</code></pre><h3>Localhost Server</h3><p>Use the <code>--port</code> option to serve <code>&lt;target&gt;</code> on a localhost server.</p><pre><code class="language-shell">/website $ alternator path/to/source path/to/target --port 8080
+[serve] serving path/to/target at http://localhost:8080
+^c to stop
+</code></pre><h3>Clean URLs</h3><p>The localhost server supports clean urls.</p><p>For example, <code>&lt;target&gt;/foo.html</code> is available at <code>localhost:8080/foo</code> so you don't have to clutter your project with extra directories and index files. Note that not all production servers support this.</p><h3>Not Found</h3><p>If a requested HTML files isn't available, the localhost server will fallback to <code>&lt;target&gt;/404.html</code>. Note that not all production servers support this.</p><h3>Putting It Together</h3><p><code>--watch</code> and <code>--port</code> can be combined for a simple dev environment.</p><pre><code class="language-shell">/website $ alternator path/to/source path/to/target -wp 8080
+[watch] watching path/to/source for changes
+[serve] serving path/to/target at http://localhost:8080
+^c to stop
+</code></pre><h2>Layouts</h2><p>Any file can be used as a <em>layout</em> so long as it has a <code>#content</code> comment so specify where its contents should be rendered.</p><p>Ignore layouts by using a <code>!</code> to keep them out of <code>&lt;target&gt;</code>.</p><blockquote><p>path/to/source/!layouts/main.html</p></blockquote><pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Alternator&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- #content --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>The <code>#layout</code> metadata key defines which layout a file should use. The path to the layout file is relative to <code>&lt;source&gt;</code>.</p><blockquote><p>path/to/source/index.html</p></blockquote><pre><code class="language-html">---
+#layout: !layouts/main.html
+---
+&lt;h1&gt;Welcome&lt;/h1&gt;
+&lt;p&gt;Hello, world!&lt;/p&gt;
+</code></pre><p>Alternator will render the file inside its layout.</p><blockquote><p>path/to/target/index.html</p></blockquote><pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Alternator&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Welcome&lt;/h1&gt;
+    &lt;p&gt;Hello, world!&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h2>Includes</h2><p>Files can <em>include</em> other files using an <code>#include</code> comment. The path to the included file is relative to <code>&lt;source&gt;</code>.</p><blockquote><p>path/to/source/app.js</p></blockquote><pre><code class="language-js">// #include !scripts/foo.js
+// #include !scripts/bar.js
+</code></pre><p>Like layouts, included files can be kept out of <code>&lt;target&gt;</code> with a <code>!</code>.</p><blockquote><p>path/to/source/!scripts/foo.js</p></blockquote><pre><code class="language-js">function foo() {
+  // do something
+}
+</code></pre><blockquote><p>path/to/source/!scripts/bar.js</p></blockquote><pre><code class="language-js">function bar() {
+  // do something else
+}
+</code></pre><p>Alternator will render the included files in place.</p><blockquote><p>path/to/target/app.js</p></blockquote><pre><code class="language-js">function foo() {
+  // do something
+}
+function bar() {
+  // do something else
+}
+</code></pre><h2>Variables</h2><p>Define <em>variables</em> with an <code>@</code> as arguments of an include statement.</p><blockquote><p>path/to/source/design.css</p></blockquote><pre><code class="language-css">/* #include !styles/fontFace.css @fontName: Helvetica */
+</code></pre><p>And render them as comments.</p><blockquote><p>path/to/source/!styles/fontFace.css.css</p></blockquote><pre><code class="language-css">@font-face {
+  font-display: swap;
+  font-family: /*@fontName*/;
+  src: url("/fonts/*@fontName*/.woff2");
+}
+</code></pre><p>Alternator will render the variables in place.</p><blockquote><p>path/to/target/design.css</p></blockquote><pre><code class="language-css">@font-face {
+  font-display: swap;
+  font-family: Helvetica;
+  src: url("/fonts/Helvetica.woff2");
+}
+</code></pre><h2>Pro Tips</h2><ul><li><code>.css</code> and <code>.js</code> files from <code>&lt;source&gt;</code> will be minified in <code>&lt;target&gt;</code>.</li><li>Multiple arguments can be used with an <code>#include</code> statement.</li><li>Included files can have their own layouts with a <code>#layout</code> argument.<br /> <code>&lt;!-- #include !file.html #layout: !layout.html @foo: bar --&gt;</code></li><li>You can also pass <code>#layout: false</code> to override the metadata layout.</li><li>Variables can define default values in metadata or be given fallback values with the <code>??</code> operator: <code>&lt;!-- @foo ?? bar --&gt;</code></li></ul>
     </article>
   </main>
   <footer>
     <p>🚀 <a href="https://weshipsoftware.com">We Ship Software</a></p>
-    <p><a href="https://github.com/weshipsoftware/alternator">View Source</a></p>
+    <p><a href="https://github.com/weshipsoftware/alternator">View Source</a> 🛠️</p>
   </footer>
 </body>

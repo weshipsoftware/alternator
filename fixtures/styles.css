@@ -60,11 +60,39 @@ article {
   width: 30rem;
 }
 
+blockquote {
+  background-color: indigo;
+  margin: 0 0 0 -1rem;
+  padding: .5rem 1rem;
+  width: calc(100% + 2rem);
+
+  p {
+    color: white;
+    font-family: HyperlegibleMono, monospace;
+    font-size: .8rem;
+    letter-spacing: -.09em;
+    margin: 0;
+  }
+
+  & + pre {
+    background-color: lavender;
+    color: indigo;
+  }
+}
+
 body {
   background-color: white;
   background-color: light-dark(white, black);
   margin: 0;
 }
+
+code {
+  font-family: HyperlegibleMono, monospace;
+  font-size: .9rem;
+  letter-spacing: -.09em;
+}
+
+em {font-style: oblique;}
 
 footer {
   font-family: Zarid, sans-serif;
@@ -118,14 +146,12 @@ header {
 
   p:nth-child(2) {
     font-size: 1.25rem;
-    font-weight: 300;
     margin-bottom: 1rem;
   }
 
   p:nth-child(3) {
     color: dimgray;
     font-size: .8rem;
-    font-weight: 300;
 
     a {
       background-color: firebrick;
@@ -153,8 +179,6 @@ main {
   border-width: 0 0 1px 0;
   padding-bottom: 2.5rem;
   padding-top: 2rem;
-
-  h2:nth-child(1) {margin-top: 0;}
 }
 
 li {
@@ -171,6 +195,8 @@ li {
   }
 }
 
+ol, ul {padding-inline-start: 0;}
+
 p {
   margin: 0 0 1rem 0;
 
@@ -179,10 +205,31 @@ p {
     background-color: light-dark(lavender, darkslateblue);
     color: indigo;
     color: light-dark(indigo, lavender);
-    font-family: HyperlegibleMono, monospace;
-    font-size: .9rem;
-    letter-spacing: -.09em;
   }
 }
 
-ul {padding-inline-start: 0;}
+pre {
+  background-color: black;
+  color: white;
+  margin: 0 0 1rem -1rem;
+  padding: 1rem;
+  width: calc(100% + 2rem);
+
+  code {
+    display: block;
+    font-size: .8rem;
+
+    &.language-shell {
+      color: silver;
+
+      &::first-line {
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  & + blockquote {
+    margin-top: -1rem;
+  }
+}

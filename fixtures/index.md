@@ -1,69 +1,239 @@
 ---
 #layout: !layout.html
 ---
+
+```shell
+/website $ alternator --help
+USAGE: alternator <source> <target> [--watch] [--port <port>]
+
+ARGUMENTS:
+  <source>                Path to your source directory.
+  <target>                Path to your target directory.
+
+OPTIONS:
+  -w, --watch             Rebuild <source> as you save changes.
+  -p, --port <port>       Serve <target> on localhost:<port>.
+  --version               Show the version.
+  -h, --help              Show help information.
+```
+
 ## Getting Started
 
-The alternator command builds your `<source>` files into `<target>`.
+Alternator works by reading the files in your `<source>` directory, filling in the
+layouts, includes, and variables, then saving the rendered files to your `<target>`
+directory for publishing.
 
-<!-- #include !gist.html @id: 979ce70ee106d472a2dbf6b88a8cb378 -->
+```shell
+/website $ alternator path/to/source path/to/target
+```
 
-Add `--watch` to automatically build `<source>` changes on save and
-add `--port` to serve `<target>` on localhost.
+Layouts, includes, and variables are defined in text-based `<source>` files using
+comments and metadata. More on that later.
 
-<!-- #include !gist.html @id: 1e01d425e1d896f5253a1fb3a868b3ea -->
+Alternator has no directory structure requirements and simply copies the structure
+from `<source>` to `<target>`.
 
-### Pro Tips
+### Static Assets
 
-- The localhost server uses clean urls.
-- File/folder names starting with `!` will not be built to `<target>`.
-- Markdown files are automatically converted to HTML files:<br />
-  `path/to/source/index.md` → `path/to/target/index.html`
-- Layouts, includes, variables, and metadata work in:<br />
-  `.css`, `.htm`, `.html`, `.js`, `.md`, `.rss`, `.svg`, `.txt`, and `.xml`.<br />
-  All other file types are copied unchanged to `<target>`.
-- `<target>/404.html` will be rendered on any request that's not found.
+Files that can't be rendered, such as images, are considered static assets and are
+copied as-is from `<source>` to `<target>`.
+
+### Ignoring Files
+
+File and directory names starting with a `.` or a `!` are ignored by the build
+process. This is useful for a few reasons:
+
+- Dotfiles used for configuration are never touched by Alternator.
+- `<source>` files that should _not_ be published, such as layouts and includes, are
+  not moved to `<target>`.
+- Static assets can live in `<target>` under a `!` directory, such as `!assets/img`,
+  instead of being copied during the build process, reducing duplicate files.
+
+### Markdown
+
+Markdown files ending with `.md` are converted to HTML. The rendered files are saved
+to `<target>` as `.html` files.
+
+### Watching for Changes
+
+Use the `--watch` flag to monitor `<source>` for changes and automatically render
+after each save.
+
+```shell
+/website $ alternator path/to/source path/to/target --watch
+[watch] watching path/to/source for changes
+^c to stop
+```
+
+### Localhost Server
+
+Use the `--port` option to serve `<target>` on a localhost server.
+
+```shell
+/website $ alternator path/to/source path/to/target --port 8080
+[serve] serving path/to/target at http://localhost:8080
+^c to stop
+```
+
+### Clean URLs
+
+The localhost server supports clean urls.
+
+For example, `<target>/foo.html` is available at `localhost:8080/foo` so you don't
+have to clutter your project with extra directories and index files.
+Note that not all production servers support this.
+
+### Not Found
+
+If a requested HTML files isn't available, the localhost server will fallback
+to `<target>/404.html`.
+Note that not all production servers support this.
+
+### Putting It Together
+
+`--watch` and `--port` can be combined for a simple dev environment.
+
+```shell
+/website $ alternator path/to/source path/to/target -wp 8080
+[watch] watching path/to/source for changes
+[serve] serving path/to/target at http://localhost:8080
+^c to stop
+```
 
 ## Layouts
 
-Specify a layout with the `#layout` metadata key.
+Any file can be used as a _layout_ so long as it has a `#content` comment so specify
+where its contents should be rendered.
 
-Any file with a `#content` comment can be used as a layout.
+Ignore layouts by using a `!` to keep them out of `<target>`.
 
-<!-- #include !gist.html @id: 7275044de795bb8cf55ec4f469e59070 -->
-<!-- #include !gist.html @id: c3a2b1a96efdb2e9dde22320aa15e6a1 -->
-<!-- #include !gist.html @id: ea8a5ee4144ca7aa8ced4e0347a89290 -->
+> path/to/source/!layouts/main.html
 
-### Pro Tips
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Alternator</title>
+  </head>
+  <body>
+    <!-- #content -->
+  </body>
+</html>
+```
 
-- `#layout` and `#include` paths are relative to `<source>`.
+The `#layout` metadata key defines which layout a file should use. The path to the
+layout file is relative to `<source>`.
+
+> path/to/source/index.html
+
+```html
+---
+#layout: !layouts/main.html
+---
+<h1>Welcome</h1>
+<p>Hello, world!</p>
+```
+
+Alternator will render the file inside its layout.
+
+> path/to/target/index.html
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>Alternator</title>
+  </head>
+  <body>
+    <h1>Welcome</h1>
+    <p>Hello, world!</p>
+  </body>
+</html>
+```
 
 ## Includes
 
-Use an `#include` comment to include another file.
+Files can _include_ other files using an `#include` comment.
+The path to the included file is relative to `<source>`.
 
-<!-- #include !gist.html @id: a7dd36bc4c7344bd99a748f1b1311df9 -->
-<!-- #include !gist.html @id: b0fd53b3be573001f7db558b88c3ab6f -->
-<!-- #include !gist.html @id: a74333b4004271ffcf9c63d3d05b38ae -->
-<!-- #include !gist.html @id: 44eca352d4bf967791023d0e98263f9a -->
+> path/to/source/app.js
 
-### Pro Tips
+```js
+// #include !scripts/foo.js
+// #include !scripts/bar.js
+```
 
-- Included files can have their own layouts.
-- `#include` arguments override the included file's metadata:<br />
-  `<!-- #include !file.html #layout: false @foo: bar -->`
+Like layouts, included files can be kept out of `<target>` with a `!`.
+
+> path/to/source/!scripts/foo.js
+
+```js
+function foo() {
+  // do something
+}
+```
+
+> path/to/source/!scripts/bar.js
+
+```js
+function bar() {
+  // do something else
+}
+```
+
+Alternator will render the included files in place.
+
+> path/to/target/app.js
+
+```js
+function foo() {
+  // do something
+}
+function bar() {
+  // do something else
+}
+```
 
 ## Variables
 
-Define variables with `@` symbols and render them in comments.
+Define _variables_ with an `@` as arguments of an include statement.
 
-Assign values in metatdata or as `#include` arguments.
+> path/to/source/design.css
 
-<!-- #include !gist.html @id: 887e91186e538519fbff65a708f8e8e0 -->
-<!-- #include !gist.html @id: c312f3d02e27cd2ff360636f40055388 -->
-<!-- #include !gist.html @id: 84b2e69f3ac7753d92c2ccac830a34da -->
-<!-- #include !gist.html @id: 57ef98102bdfe5049a52a287fc41d9a8 -->
+```css
+/* #include !styles/fontFace.css @fontName: Helvetica */
+```
 
-### Pro Tips
+And render them as comments.
 
-- Use `??` to assign a default value: `<!-- @foo ?? bar -->`
-- Any comment syntax works: `<!-- @foo -->`, `/* @foo */`, or `// @foo`
+> path/to/source/!styles/fontFace.css.css
+
+```css
+@font-face {
+  font-display: swap;
+  font-family: /*@fontName*/;
+  src: url("/fonts/*@fontName*/.woff2");
+}
+```
+
+Alternator will render the variables in place.
+
+> path/to/target/design.css
+
+```css
+@font-face {
+  font-display: swap;
+  font-family: Helvetica;
+  src: url("/fonts/Helvetica.woff2");
+}
+```
+
+## Pro Tips
+
+- `.css` and `.js` files from `<source>` will be minified in `<target>`.
+- Multiple arguments can be used with an `#include` statement.
+- Included files can have their own layouts with a `#layout` argument.<br />
+  `<!-- #include !file.html #layout: !layout.html @foo: bar -->`
+- You can also pass `#layout: false` to override the metadata layout.
+- Variables can define default values in metadata or be given fallback values with
+  the `??` operator: `<!-- @foo ?? bar -->`
