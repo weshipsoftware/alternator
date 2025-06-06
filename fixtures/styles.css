@@ -212,6 +212,7 @@ pre {
   background-color: black;
   color: white;
   margin: 0 0 1rem -1rem;
+  overflow-x: scroll;
   padding: 1rem;
   width: calc(100% + 2rem);
 
