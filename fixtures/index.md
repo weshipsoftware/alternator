@@ -206,13 +206,13 @@ Define _variables_ with an `@` as arguments of an include statement.
 
 And render them as comments.
 
-> path/to/source/!styles/fontFace.css.css
+> path/to/source/!styles/fontFace.css
 
 ```css
 @font-face {
   font-display: swap;
-  font-family: /*@fontName*/;
-  src: url("/fonts/*@fontName*/.woff2");
+  font-family: /* @fontName */;
+  src: url("/fonts//* @fontName */.woff2");
 }
 ```
 

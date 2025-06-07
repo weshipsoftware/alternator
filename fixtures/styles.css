@@ -52,7 +52,7 @@
   @media (min-width: 72rem) { font-size: 25px; }
 }
 
-::selection {background-color: greenyellow;}
+::selection {background-color: lightyellow;}
 
 article {
   margin: auto;
@@ -68,15 +68,17 @@ blockquote {
 
   p {
     color: white;
-    font-family: HyperlegibleMono, monospace;
+    font-family: Hyperlegible, monospace;
+    font-weight: 500;
     font-size: .8rem;
-    letter-spacing: -.09em;
+    /* letter-spacing: -.09em; */
     margin: 0;
   }
 
   & + pre {
     background-color: lavender;
     color: indigo;
+    padding-top: .5rem;
   }
 }
 

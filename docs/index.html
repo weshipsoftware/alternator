@@ -10,7 +10,7 @@
   <meta name="keywords" content="...">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="black">
-  <meta name="viewport" content="width=512">
+  <meta name="viewport" content="width=544">
   <link rel="apple-touch-icon" href="/!assets/touch-icon.png">
   <link rel="icon" sizes="192x192" href="/!assets/touch-icon.png">
   <link rel="icon" type="image/x-icon" href="/!assets/favicon.ico">
@@ -102,10 +102,10 @@ function bar() {
   // do something else
 }
 </code></pre><h2>Variables</h2><p>Define <em>variables</em> with an <code>@</code> as arguments of an include statement.</p><blockquote><p>path/to/source/design.css</p></blockquote><pre><code class="language-css">/* #include !styles/fontFace.css @fontName: Helvetica */
-</code></pre><p>And render them as comments.</p><blockquote><p>path/to/source/!styles/fontFace.css.css</p></blockquote><pre><code class="language-css">@font-face {
+</code></pre><p>And render them as comments.</p><blockquote><p>path/to/source/!styles/fontFace.css</p></blockquote><pre><code class="language-css">@font-face {
   font-display: swap;
-  font-family: /*@fontName*/;
-  src: url("/fonts/*@fontName*/.woff2");
+  font-family: /* @fontName */;
+  src: url("/fonts//* @fontName */.woff2");
 }
 </code></pre><p>Alternator will render the variables in place.</p><blockquote><p>path/to/target/design.css</p></blockquote><pre><code class="language-css">@font-face {
   font-display: swap;
