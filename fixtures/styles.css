@@ -64,7 +64,7 @@ blockquote {
   background-color: indigo;
   margin: 0 0 0 -1rem;
   padding: .5rem 1rem;
-  width: calc(100% + 2rem);
+  width: 100%;
 
   p {
     color: white;
@@ -161,6 +161,8 @@ header {
   background-color: var(--background);
   padding-top: 2.5rem;
 
+  @media (max-width: 32rem) {padding-top: 1rem;}
+
   h1, p {
     margin: auto;
     padding: 0 1rem;
@@ -240,7 +242,7 @@ pre {
   margin: 0 0 1rem -1rem;
   overflow-x: scroll;
   padding: 1rem;
-  width: calc(100% + 2rem);
+  width: 100%;
 
   code {
     color: indigo;
