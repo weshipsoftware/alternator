@@ -41,18 +41,18 @@
 
   font: 16px/1.33 Hyperlegible, sans-serif;
 
-  @media (min-width: 48rem) { font-size: 17px; }
-  @media (min-width: 51rem) { font-size: 18px; }
-  @media (min-width: 54rem) { font-size: 19px; }
-  @media (min-width: 57rem) { font-size: 20px; }
-  @media (min-width: 60rem) { font-size: 21px; }
-  @media (min-width: 63rem) { font-size: 22px; }
-  @media (min-width: 66rem) { font-size: 23px; }
-  @media (min-width: 69rem) { font-size: 24px; }
-  @media (min-width: 72rem) { font-size: 25px; }
+  @media (min-width: 48rem) {font-size: 17px;}
+  @media (min-width: 51rem) {font-size: 18px;}
+  @media (min-width: 54rem) {font-size: 19px;}
+  @media (min-width: 57rem) {font-size: 20px;}
+  @media (min-width: 60rem) {font-size: 21px;}
+  @media (min-width: 63rem) {font-size: 22px;}
+  @media (min-width: 66rem) {font-size: 23px;}
+  @media (min-width: 69rem) {font-size: 24px;}
+  @media (min-width: 72rem) {font-size: 25px;}
 }
 
-::selection {background-color: lightyellow;}
+::selection {background-color: cyan;}
 
 article {
   margin: auto;
@@ -71,7 +71,6 @@ blockquote {
     font-family: Hyperlegible, monospace;
     font-weight: 500;
     font-size: .8rem;
-    /* letter-spacing: -.09em; */
     margin: 0;
   }
 
@@ -89,9 +88,12 @@ body {
 }
 
 code {
+  color: indigo;
+  color: light-dark(indigo, lavender);
   font-family: HyperlegibleMono, monospace;
   font-size: .9rem;
-  letter-spacing: -.09em;
+  font-weight: 500;
+  letter-spacing: -.067em;
 }
 
 em {font-style: oblique;}
@@ -118,23 +120,42 @@ footer {
 
     &:nth-child(2) {
       float: right;
-
       a {color: #3094FF;}
     }
   }
 }
 
 h1, h2, h3 {
-  color: black;
-  color: light-dark(black, white);
   font-family: Concourse, sans-serif;
   margin-bottom: 1rem;
   margin: 1em 0 1rem 0;
 }
 
-h1 {font-size: 5rem;}
-h2 {font-size: 2rem;}
-h3 {font-size: 1rem;}
+h1 {
+  color: black;
+  color: light-dark(black, white);
+  font-size: 5rem;
+}
+
+h2 {
+  color: cadetblue;
+  color: light-dark(maroon, cadetblue);
+  font-size: 2rem;
+}
+
+h3 {
+  color: var(--foreground);
+  font-size: 1rem;
+
+  &:before {
+    color: darkslategray;
+    content: '→';
+    display: inline-block;
+    margin-left: -1rem;
+    text-align: center;
+    width: 1rem;
+  }
+}
 
 header {
   background-color: var(--background);
@@ -157,6 +178,7 @@ header {
 
     a {
       background-color: firebrick;
+      border: 1px solid maroon;
       border-radius: 1.5rem;
       color: white;
       display: inline-block;
@@ -181,6 +203,15 @@ main {
   border-width: 0 0 1px 0;
   padding-bottom: 2.5rem;
   padding-top: 2rem;
+
+  a {
+    box-shadow: inset 0 -2px 0 orange;
+    color: inherit;
+    text-decoration: none;
+    transition: all .2s;
+
+    &:hover {box-shadow: inset 0 -1em 0 color(from orange srgb r g b / .2);}
+  }
 }
 
 li {
@@ -189,11 +220,6 @@ li {
   code {
     background-color: lavender;
     background-color: light-dark(lavender, darkslateblue);
-    color: indigo;
-    color: light-dark(indigo, lavender);
-    font-family: HyperlegibleMono, monospace;
-    font-size: .9rem;
-    letter-spacing: -.09em;
   }
 }
 
@@ -205,8 +231,6 @@ p {
   code {
     background-color: lavender;
     background-color: light-dark(lavender, darkslateblue);
-    color: indigo;
-    color: light-dark(indigo, lavender);
   }
 }
 
@@ -219,6 +243,7 @@ pre {
   width: calc(100% + 2rem);
 
   code {
+    color: indigo;
     display: block;
     font-size: .8rem;
 
@@ -232,7 +257,5 @@ pre {
     }
   }
 
-  & + blockquote {
-    margin-top: -1rem;
-  }
+  & + blockquote {margin-top: -1rem;}
 }

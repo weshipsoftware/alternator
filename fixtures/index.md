@@ -30,30 +30,6 @@ directory for publishing.
 Layouts, includes, and variables are defined in text-based `<source>` files using
 comments and metadata. More on that later.
 
-Alternator has no directory structure requirements and simply copies the structure
-from `<source>` to `<target>`.
-
-### Static Assets
-
-Files that can't be rendered, such as images, are considered static assets and are
-copied as-is from `<source>` to `<target>`.
-
-### Ignoring Files
-
-File and directory names starting with a `.` or a `!` are ignored by the build
-process. This is useful for a few reasons:
-
-- Dotfiles used for configuration are never touched by Alternator.
-- `<source>` files that should _not_ be published, such as layouts and includes, are
-  not moved to `<target>`.
-- Static assets can live in `<target>` under a `!` directory, such as `!assets/img`,
-  instead of being copied during the build process, reducing duplicate files.
-
-### Markdown
-
-Markdown files ending with `.md` are converted to HTML. The rendered files are saved
-to `<target>` as `.html` files.
-
 ### Watching for Changes
 
 Use the `--watch` flag to monitor `<source>` for changes and automatically render
@@ -75,20 +51,6 @@ Use the `--port` option to serve `<target>` on a localhost server.
 ^c to stop
 ```
 
-### Clean URLs
-
-The localhost server supports clean urls.
-
-For example, `<target>/foo.html` is available at `localhost:8080/foo` so you don't
-have to clutter your project with extra directories and index files.
-Note that not all production servers support this.
-
-### Not Found
-
-If a requested HTML files isn't available, the localhost server will fallback
-to `<target>/404.html`.
-Note that not all production servers support this.
-
 ### Putting It Together
 
 `--watch` and `--port` can be combined for a simple dev environment.
@@ -104,8 +66,6 @@ Note that not all production servers support this.
 
 Any file can be used as a _layout_ so long as it has a `#content` comment so specify
 where its contents should be rendered.
-
-Ignore layouts by using a `!` to keep them out of `<target>`.
 
 > path/to/source/!layouts/main.html
 
@@ -162,8 +122,6 @@ The path to the included file is relative to `<source>`.
 // #include !scripts/foo.js
 // #include !scripts/bar.js
 ```
-
-Like layouts, included files can be kept out of `<target>` with a `!`.
 
 > path/to/source/!scripts/foo.js
 
@@ -230,10 +188,105 @@ Alternator will render the variables in place.
 
 ## Pro Tips
 
-- `.css` and `.js` files from `<source>` will be minified in `<target>`.
-- Multiple arguments can be used with an `#include` statement.
-- Included files can have their own layouts with a `#layout` argument.<br />
-  `<!-- #include !file.html #layout: !layout.html @foo: bar -->`
-- You can also pass `#layout: false` to override the metadata layout.
-- Variables can define default values in metadata or be given fallback values with
-  the `??` operator: `<!-- @foo ?? bar -->`
+### Structuring Your Site
+
+Alternator has no directory structure requirements so you can organize `<source>`
+however you like.
+
+The structure of `<source>` will be copied to `<target>`.
+
+The structure of `<target>` becomes your URLs when published.
+
+### Keeping `<target>` Clean
+
+When you delete a file from `<source>`, it also gets deleted from `<target>`. There’s
+no need to manage source files in `<target>`.
+
+### Managing Dotfiles
+
+Files and directories starting with a `.`, such as `.env`, `.htaccess`, and `.git/`,
+are often used for configuration.
+
+Alternator ignores them completely, both in `<source>` and `<target>`.
+
+If they’re in `<source>`, they won’t be moved to `<target>`.
+
+If they’re in `<target>`, they _won’t_ be cleaned up (see above) and the _will_ be
+published.
+
+### Ignoring Files
+
+Use a `!` at the beginning of a file or directory name and Alternator will ignore it.
+
+In `<source>` this is useful for files that shouldn’t be copied to `<target>`,
+such as `!layout.html` and `!includes/`.
+
+In `<target>` this is useful for files that belong in `<target>` but shouldn’t be
+cleaned up after builds, such as `!assets/` and `!img/`.
+
+### Using Markdown
+
+Markdown files (`.md`) are automatically converted to HTML and copied to `<target>`
+as `.html` files.
+
+### Multiple _Include_ Arguments
+
+`#include` statements can have multiple arguments, formatted as `key: value` and
+separated by spaces:
+
+`// #include sample.js @foo: true @bar: false`
+
+### Fallback _Variable_ Values
+
+Define fallback values for variables with the `??` operator:
+
+`<!-- @foo ?? bar -->`
+
+### _Layout_ Your _Includes_
+
+Included files can have their own layouts, either defined in their metadata or as an
+argument passed with the `#include` statement:
+
+`<!-- #include !posts/post.md #layout: !postLayout.html -->`
+
+You can even remove an included file’s layout with `#layout: false`.
+
+### Minifying Assets
+
+`.css` and `.js` files from `<source>` are automatically minified.
+
+### Managing Static Assets
+
+Files that can’t be rendered, such as images, are considered static assets and are
+copied as-is from `<source>` to `<target>`.
+
+It’s usually a good idea to put static assets directly in `<target>` under a `!`
+directory like `!assets/` or `!images/`.
+
+### Clean URLs
+
+The localhost server supports clean urls.
+
+For example, `<target>/foo.html` is available at `localhost:8080/foo` so you don’t
+have to clutter your project with extra directories and index files.
+
+_Not all production servers support this._
+
+### Displaying a _404 Not Found_ Error Page
+
+If the localhost server cannot find a requested file, it will return the
+_404 Not Found_ HTTP response status code.
+
+If `<target>/404.html` exists, it will be returned for any not found HTML requests.
+
+No response body will be returned for non-HTML requests.
+
+_Not all production servers support this._
+
+### Publishing Your Site
+
+Alternator sites can be published to any host that serves static files.
+
+This site is hosted on GitHub Pages using _/docs_ as the `<target>`.
+
+Check your web host’s documentation for specifics.
