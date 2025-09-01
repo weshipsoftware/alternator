@@ -205,12 +205,14 @@ main {
   padding-top: 2rem;
 
   a {
-    box-shadow: inset 0 -2px 0 orange;
+    box-shadow: inset 0 -2px 0 dodgerblue;
     color: inherit;
     text-decoration: none;
-    transition: all .2s;
+    transition: box-shadow .2s;
 
-    &:hover {box-shadow: inset 0 -1em 0 color(from orange srgb r g b / .2);}
+    &:hover {
+      box-shadow: inset 0 -1em 0 color(from deepskyblue srgb r g b / .2);
+    }
   }
 }
 
