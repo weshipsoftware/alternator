@@ -1,132 +1,107 @@
 import Foundation
-import Ink
 
 struct File {
-  let src: URL
-
-  var contents: String { get throws {
-    let text = try src.contents
-    if src.pathExtension == "md" {return MarkdownParser.shared.html(from: text)}
-    guard try !metadata.isEmpty else {return text}
-    guard let match = text.find(#"---(\n|.)*?---\n"#).first else {return text}
-    return text.replacingFirst(of: match)
-  }}
-
-  var deps: [File] { get throws {
-    guard isRenderable else {return []}
-
-    let files: [File?] = try contents
-      .find(Include.pattern)
-      .map {Include(fragment: $0).file}
-      + [try layout]
-
-    return try files
-      .filter {$0 != nil && $0!.src.exists == true}
-      .map {$0!}
-      .flatMap {try [$0] + $0.deps}
-      .map {$0.src}
-      .unique
-      .map {Self(src: $0)}
-  }}
-
-  var isModified: Bool { get throws {
-    guard tgt.exists,
-      let srcModDate = try src.modificationDate,
-      let tgtModDate = try tgt.modificationDate,
-      tgtModDate > srcModDate
-    else {return true}
-
-    return try deps.contains {try $0.src.modificationDate! > tgtModDate}
-  }}
-
-  var isRenderable: Bool {
-    ["css", "htm", "html", "js", "md", "rss", "svg", "txt", "xml"]
-      .contains(src.pathExtension)
-  }
-
-  var layout: File? { get throws {
-    guard let ref = try metadata["#layout"] else {return nil}
-    return Project.file(ref)
-  }}
-
-  var metadata: [String: String] { get throws
-    {MarkdownParser.shared.parse(try src.contents).metadata} }
-
-  var ref: String {src.rawPath.replacingFirst(of: Project.src!.path()).ref}
-
-  var tgt: URL {
-    let url = Project.tgt!.appending(path: ref)
+  var source: URL
+  var target: URL {
+    let url = Project.target.appending(path: ref(.source))
     return url.pathExtension == "md"
     ? url.deletingPathExtension().appendingPathExtension("html")
     : url
   }
 
-  func build() throws {
-    guard try isModified, !src.isIgnored else {return}
+  static func find(_ ref: String) -> Self? {
+    let ref = Project.source.path(percentEncoded: false).appending(ref)
+    return Self(source: URL(fileURLWithPath: ref))
+  }
 
-    if tgt.exists {try FileManager.default.removeItem(at: tgt)}
+  func build() throws {
+    guard try isModified, !source.isIgnored else { return }
+
+    if target.exists { try FileManager.default.removeItem(at: target) }
 
     try FileManager.default.createDirectory(
-      atPath: tgt.deletingLastPathComponent().path(percentEncoded: false),
+      atPath: target.deletingLastPathComponent().path(percentEncoded: false),
       withIntermediateDirectories: true)
 
-    if isRenderable {
-      echo("[build] rendering \(src.masked) -> \(tgt.masked)")
-      FileManager.default
-        .createFile(atPath: tgt.rawPath, contents: try render().data(using: .utf8))
-    } else {
-      echo("[build] copying \(src.masked) -> \(tgt.masked)")
-      try src.touch()
-      try FileManager.default.copyItem(at: src, to: tgt)
-      try tgt.touch()
+    if source.isRenderable {
+      print("[build] rendering \(ref(.source)) -> \(ref(.target))")
+      FileManager.default.createFile(
+        atPath: target.path(percentEncoded: false),
+        contents: try render().data(using: .utf8))
+    }
+
+    else {
+      print("[build] copying \(ref(.source)) -> \(ref(.target))")
+      try source.touch()
+      try FileManager.default.copyItem(at: source, to: target)
+      try target.touch()
     }
   }
 
   func render(_ context: [String: String] = [:]) throws -> String {
-    var context = context.merging(try metadata, uniquingKeysWith: {(x, _) in x})
-    var text    = try contents
+    var text = try source.contents
+    var context = context
+      .merging(try source.metadata, uniquingKeysWith: { (x, _) in x })
 
-    if let layout = try layout {
-      let macro = Layout(content: text, template: layout)
-      context = context
-        .merging(try macro.template.metadata, uniquingKeysWith: {(x, _) in x})
-      text = try macro.render()
+    if let template = try source.template {
+      (text, context) = try Layout(template: template, context: context)
+        .render(text)
     }
 
-    for match in text.find(Include.pattern) {
-      let macro = Include(fragment: match)
-      if macro.file?.src.exists == true {
-        var params = macro.parameters
-        for (key, val) in params where context[val] != nil
-          {params[key] = context[val]}
-        text = text.replacingFirst(of: match, with: try macro.file!.render(params))
-      }
+    for fragment in text.comments(Include.pattern) {
+      text = text.replacingFirst(
+        of: fragment,
+        with: try Include(fragment: fragment).render(context))
     }
 
-    for match in text
-      .find(#"((<!--|/\*|/\*\*)\s*@[\s\S]*?(-->|\*/)|//[^\S\r\n]*@[^\n]*)"#) {
-        let macro = Variable(fragment: match)
-        if let value = context.contains(where: {$0.key == macro.key})
-        ? context[macro.key] : macro.val
-          {text = text.replacingFirst(of: match, with: value as String)}
-    }
-
-    if ["css", "js"].contains(src.pathExtension) {
-      for match in text
-        .find(#"((<!--|/\*|/\*\*)\s*[\s\S]*?(-->|\*/)|//[^\S\r\n]*[^\n]*)"#)
-          {text = text.replacingFirst(of: match, with: "")}
-
-      text = text
-        .components(separatedBy: .newlines)
-        .map {$0.trimmingCharacters(in: .whitespacesAndNewlines)}
-        .joined()
-        .replacingOccurrences(of: ": ", with: ":")
-        .replacingOccurrences(of: "{ ", with: "{")
-        .replacingOccurrences(of: " {", with: "{")
-        .replacingOccurrences(of: "} ", with: "}")
-        .replacingOccurrences(of: " }", with: "}")
+    for fragment in text.comments(Variable.pattern) {
+      text = text.replacingFirst(
+        of: fragment,
+        with: Variable(fragment: fragment).render(context))
     }
 
     return text
+  }
+}
+
+fileprivate extension File {
+  var dependencies: [Self] { get throws {
+    guard source.isRenderable else { return [] }
+
+    let files: [File?] = try source.contents
+      .comments(Include.pattern)
+      .map { Include(fragment: $0).parse?.0 }
+    + [try source.template]
+
+    return try files
+      .filter { $0 != nil && $0!.source.exists == true }
+      .flatMap { try [$0!] + $0!.dependencies }
+      .map { $0.source }
+      .reduce(into: Set<URL>(), { (array, file) in array.insert(file) })
+      .map { Self(source: $0) }
+  }}
+
+  var isModified: Bool { get throws {
+    guard
+      target.exists,
+      let sourceModDate = try source.modificationDate,
+      let targetModDate = try target.modificationDate,
+      targetModDate > sourceModDate
+    else { return true }
+    return try dependencies.contains
+      { try $0.source.modificationDate! > targetModDate }
+  }}
+
+  enum Environment { case source, target }
+  func ref(_ environment: Self.Environment) -> String {
+    let env = switch environment {
+      case .source: (directory: Project.source, path: source)
+      case .target: (directory: Project.target, path: target)
+    }
+
+    return env.path.formatted()
+      .replacingFirst(of: env.directory!.formatted())
+      .split(separator: "/")
+      .joined(separator: "/")
   }
 }
