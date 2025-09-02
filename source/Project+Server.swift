@@ -1,26 +1,21 @@
-import Foundation
 import Network
 import UniformTypeIdentifiers
 
 extension Project {
   static func serve(port: UInt16) {
     let listener = try! NWListener(
-      using: .tcp,
-      on: NWEndpoint.Port(rawValue: port)!)
-
+      using: .tcp, on: NWEndpoint.Port(rawValue: port)!)
     listener.newConnectionHandler = { (_ conn) in
       conn.start(queue: .main)
       Self.receive(from: conn)
     }
 
     listener.start(queue: .main)
-
-    print("[serve] serving \(Project.target.description)",
-          "at http://localhost:\(port)")
+    print("[serve] serving \(target.description) at http://localhost:\(port)")
   }
 }
 
-private extension Project {
+fileprivate extension Project {
   static func receive(from conn: NWConnection) {
     conn.receive(
       minimumIncompleteLength: 1,
@@ -60,7 +55,7 @@ fileprivate struct Request {
     let request = String(data: data, encoding: .utf8)!
       .components(separatedBy: "\r\n")
     guard let requestLine = request.first, request.last!.isEmpty
-    else { return nil }
+     else { return nil }
     let components = requestLine.components(separatedBy: " ")
     guard components.count == 3 else { return nil }
     self.path = components[1]
@@ -79,20 +74,17 @@ fileprivate struct Request {
 fileprivate struct Response {
   let status: Status
 
-  private let body:     Data
-  private let headers: [Header: String]
+  private let body:Data, headers: [Header: String]
 
   enum Header: String
     { case contentLength = "Content-Length", contentType = "Content-Type" }
 
   enum Status: Int, CustomStringConvertible {
     case ok = 200, notFound = 404
-    var description: String {
-      switch self {
-        case .ok: "OK"
-        case .notFound: "Not Found"
-      }
-    }
+    var description: String { switch self {
+      case .ok: "OK"
+      case .notFound: "Not Found"
+    }}
   }
 
   var data: Data {
@@ -100,23 +92,17 @@ fileprivate struct Response {
     headerLines.append(
       contentsOf: headers.map { "\($0.key.rawValue): \($0.value)" })
     headerLines.append(""); headerLines.append("")
-    return headerLines
-      .joined(separator: "\r\n")
-      .data(using: .utf8)!
-      + body
+    return headerLines.joined(separator: "\r\n").data(using: .utf8)! + body
   }
 
-  init(_ status:  Status          = .ok,
-           body:  Data            = Data(),
-    contentType:  UTType?         = nil,
-        headers: [Header: String] = [:])
+  init(_ status: Status  = .ok,    body: Data             = Data(),
+    contentType: UTType? = nil, headers: [Header: String] = [:])
   {
     self.status = status
     let notFoundFile = Project.target.appending(path: "404.html")
-    self.body =
-      status == .notFound
-      && contentType == .html
-      && notFoundFile.exists
+    self.body = status      == .notFound
+             && contentType == .html
+             && notFoundFile.exists
     ? try! Data(contentsOf: notFoundFile) : body
     self.headers = headers.merging([
       .contentLength: String(self.body.count),

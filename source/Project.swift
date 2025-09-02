@@ -1,8 +1,7 @@
 import Foundation
 
 struct Project {
-  static var source: URL!
-  static var target: URL!
+  static var source: URL!, target: URL!
 
   static func build() {
     do {
@@ -13,7 +12,7 @@ struct Project {
   }
 }
 
-private extension Project {
+fileprivate extension Project {
   static var manifest: [File] {
     source.subpaths
       .filter { !$0.isDirectory }
@@ -30,9 +29,7 @@ private extension Project {
 
   static func isOrphaned(url: URL) -> Bool {
     guard !url.isDirectory else { return false }
-    return !manifest
-      .map({ $0.target.formatted() })
-      .contains(url.formatted())
+    return !manifest.map({ $0.target.formatted() }).contains(url.formatted())
   }
 
   static func removeItem(at: URL) throws {

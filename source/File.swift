@@ -5,13 +5,11 @@ struct File {
   var target: URL {
     let url = Project.target.appending(path: ref(.source))
     return url.pathExtension == "md"
-    ? url.deletingPathExtension().appendingPathExtension("html")
-    : url
+    ? url.deletingPathExtension().appendingPathExtension("html") : url
   }
 
   static func find(_ ref: String) -> Self? {
-    let ref = Project.source.path(percentEncoded: false).appending(ref)
-    return Self(source: URL(fileURLWithPath: ref))
+    Self(source: URL(fileURLWithPath: Project.source.rawPath.appending(ref)))
   }
 
   func build() throws {
@@ -20,14 +18,13 @@ struct File {
     if target.exists { try FileManager.default.removeItem(at: target) }
 
     try FileManager.default.createDirectory(
-      atPath: target.deletingLastPathComponent().path(percentEncoded: false),
+      atPath: target.deletingLastPathComponent().rawPath,
       withIntermediateDirectories: true)
 
     if source.isRenderable {
       print("[build] rendering \(ref(.source)) -> \(ref(.target))")
       FileManager.default.createFile(
-        atPath: target.path(percentEncoded: false),
-        contents: try render().data(using: .utf8))
+        atPath: target.rawPath, contents: try render().data(using: .utf8))
     }
 
     else {
@@ -45,20 +42,15 @@ struct File {
 
     if let template = try source.template {
       (text, context) = try Layout(template: template, context: context)
-        .render(text)
-    }
-
+        .render(text) }
     for fragment in text.comments(Include.pattern) {
       text = text.replacingFirst(
         of: fragment,
-        with: try Include(fragment: fragment).render(context))
-    }
-
+        with: try Include(fragment: fragment).render(context)) }
     for fragment in text.comments(Variable.pattern) {
       text = text.replacingFirst(
         of: fragment,
-        with: Variable(fragment: fragment).render(context))
-    }
+        with: Variable(fragment: fragment).render(context)) }
 
     return text
   }
@@ -101,7 +93,6 @@ fileprivate extension File {
 
     return env.path.formatted()
       .replacingFirst(of: env.directory!.formatted())
-      .split(separator: "/")
-      .joined(separator: "/")
+      .split(separator: "/").joined(separator: "/")
   }
 }

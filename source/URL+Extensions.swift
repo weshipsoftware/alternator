@@ -2,54 +2,42 @@ import Foundation
 import Ink
 import RegexBuilder
 
-let markdownParser = MarkdownParser()
-
 extension URL {
   var contents: String { get throws {
     let text = try rawValue
-    guard pathExtension != "md" else
-      { return markdownParser.html(from: text) }
-    guard try !metadata.isEmpty else { return text }
-    guard let match = text.firstMatch(of: Regex {
-      Anchor.startOfSubject
-      "---"
-      ZeroOrMore(.any, .reluctant)
-      "---"
-      Anchor.endOfLine
-    })?.output.description
-     else { return text }
+    guard pathExtension != "md"
+     else { return Self.markdownParser.html(from: text) }
+    guard
+      try !metadata.isEmpty,
+      let match = text.firstMatch(of: Regex {
+        Anchor.startOfSubject
+        "---"; ZeroOrMore(.any, .reluctant)
+        "---"; Anchor.endOfLine
+      })?.output.description
+    else { return text }
     return text.replacingFirst(of: match)
   }}
 
   var description: String { formatted().removingPercentEncoding! }
 
-  var exists: Bool
-    { FileManager.default.fileExists(atPath: path(percentEncoded: false)) }
+  var exists: Bool { FileManager.default.fileExists(atPath: rawPath) }
 
   var isDirectory: Bool {
     var isDir: ObjCBool = false
-    FileManager.default
-      .fileExists(atPath: path(percentEncoded: false),
-                  isDirectory: &isDir)
+    FileManager.default.fileExists(atPath: rawPath, isDirectory: &isDir)
     return isDir.boolValue
   }
 
   var isEmpty: Bool { get throws {
     guard isDirectory else { return false }
-    return try FileManager.default
-      .contentsOfDirectory(atPath: path(percentEncoded: false))
-      .isEmpty
+    return try FileManager.default.contentsOfDirectory(atPath: rawPath).isEmpty
   }}
 
   var isIgnored: Bool {
-    let srcRef = path(percentEncoded: false)
-      .replacingFirst(of: Project.source.formatted())
-    let tgtRef = path(percentEncoded: false)
-      .replacingFirst(of: Project.target.formatted())
+    let srcRef = rawPath.replacingFirst(of: Project.source.formatted())
+    let tgtRef = rawPath.replacingFirst(of: Project.target.formatted())
     let ref = srcRef.count <= tgtRef.count ? srcRef : tgtRef
-    return ref
-      .split(separator: "/")
-      .contains(where: { x in x.first == "." })
+    return ref.split(separator: "/").contains(where: { x in x.first == "." })
   }
 
   var isRenderable: Bool {
@@ -57,14 +45,17 @@ extension URL {
       .contains(pathExtension)
   }
 
+  static let markdownParser = MarkdownParser()
+
   var metadata: [String: String] { get throws
-    { markdownParser.parse(try rawValue).metadata }}
+    { Self.markdownParser.parse(try rawValue).metadata }}
 
   var modificationDate: Date? { get throws {
     try FileManager.default
-      .attributesOfItem(atPath: path(percentEncoded: false))[.modificationDate]
-    as? Date
+      .attributesOfItem(atPath: rawPath)[.modificationDate] as? Date
   }}
+
+  var rawPath: String { path(percentEncoded: false) }
 
   var rawValue: String { get throws
     { String(decoding: try Data(contentsOf: self), as: UTF8.self) }}
@@ -72,7 +63,7 @@ extension URL {
   var subpaths: [Self] {
     guard exists else { return [] }
     return FileManager.default
-      .subpaths(atPath: path(percentEncoded: false))!
+      .subpaths(atPath: rawPath)!
       .map { appending(path: $0) }
   }
 

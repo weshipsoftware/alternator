@@ -18,19 +18,19 @@ struct Alternator: ParsableCommand {
     Project.source = URL(fileURLWithPath: source)
     Project.target = URL(fileURLWithPath: target)
 
-    guard Project.source.exists else
-      { throw ValidationError("<source> does not exist.") }
-    guard Project.source.isDirectory else
-      { throw ValidationError("<source> must be a directory.") }
-    guard Project.source.path() != Project.target.path() else
-      { throw ValidationError("<source> and <target> cannot be the same.") }
-    guard !Project.target.exists || Project.target.isDirectory else
-      { throw ValidationError("<target> must be a directory.") }
+    guard Project.source.exists
+     else { throw ValidationError("<source> does not exist.") }
+    guard Project.source.isDirectory
+     else { throw ValidationError("<source> must be a directory.") }
+    guard Project.source.path() != Project.target.path()
+     else { throw ValidationError("<source> and <target> cannot be the same.") }
+    guard !Project.target.exists || Project.target.isDirectory
+     else { throw ValidationError("<target> must be a directory.") }
   }
 
   mutating func run() throws {
     Project.build()
-    if watch { Project.watch() }
+    if watch           { Project.watch()           }
     if let port = port { Project.serve(port: port) }
     if watch || port != nil {
       print("^c to stop")

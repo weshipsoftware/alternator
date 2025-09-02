@@ -3,11 +3,8 @@ import RegexBuilder
 struct Include {
   let fragment: String
 
-  static let pattern = Regex {
-    ZeroOrMore(.whitespace)
-    "@include"
-    ZeroOrMore(.any, .reluctant)
-  }
+  static let pattern = Regex
+    { ZeroOrMore(.whitespace); "@include"; ZeroOrMore(.any, .reluctant) }
 
   func render(_ context: [String: String]) throws -> String {
     guard let (file, args) = parse else { return fragment }
@@ -17,14 +14,10 @@ struct Include {
 
   var parse: (File, [String: String])? {
     guard let comment = fragment.comment?.replacingFirst(of: "@include")
-    else { return nil }
+     else { return nil }
 
-    let pattern = Regex {
-      OneOrMore(.whitespace)
-      "@"
-      OneOrMore(.any, .reluctant)
-      ":"
-    }
+    let pattern = Regex
+      { OneOrMore(.whitespace); "@"; OneOrMore(.any, .reluctant); ":" }
 
     let parts = comment.split(separator: pattern)
       .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -33,8 +26,7 @@ struct Include {
       parts.count > 0,
       let ref = parts.first?.split(separator: "/").joined(separator: "/"),
       let file = File.find(ref),
-      file.source.exists,
-      file.source.isRenderable
+      file.source.exists, file.source.isRenderable
     else { return nil }
 
     let keys: [String] = comment
