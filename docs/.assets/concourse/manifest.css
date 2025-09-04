@@ -1,0 +1,36 @@
+@font-face {
+  font-family: concourse;
+  font-weight: 200;
+  src: url("/.assets/concourse/200.woff2");
+}
+
+@font-face {
+  font-family: concourse;
+  font-weight: 300;
+  src: url("/.assets/concourse/300.woff2");
+}
+
+@font-face {
+  font-family: concourse;
+  font-weight: 400;
+  src: url("/.assets/concourse/400.woff2");
+}
+
+@font-face {
+  font-family: concourse;
+  font-weight: 600;
+  src: url("/.assets/concourse/600.woff2");
+}
+
+@font-face {
+  font-family: concourse;
+  font-weight: 700;
+  src: url("/.assets/concourse/700.woff2");
+}
+
+@font-face {
+  font-family: concourse;
+  font-weight: 800;
+  src: url("/.assets/concourse/800.woff2");
+}
+

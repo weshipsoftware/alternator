@@ -1,0 +1,55 @@
+@font-face {
+  font-family: bryant;
+  font-weight: 300;
+  font-style: normal;
+  src: url("/.assets/bryant/light.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 300;
+  font-style: italic;
+  src: url("/.assets/bryant/light-italic.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 400;
+  font-style: normal;
+  src: url("/.assets/bryant/regular.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 400;
+  font-style: italic;
+  src: url("/.assets/bryant/regular-italic.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 500;
+  font-style: normal;
+  src: url("/.assets/bryant/medium.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 500;
+  font-style: italic;
+  src: url("/.assets/bryant/medium-italic.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 700;
+  font-style: normal;
+  src: url("/.assets/bryant/bold.woff2");
+}
+
+@font-face {
+  font-family: bryant;
+  font-weight: 700;
+  font-style: italic;
+  src: url("/.assets/bryant/bold-italic.woff2");
+}

@@ -1,0 +1,11 @@
+@font-face {
+  font-family: spot;
+  font-weight: normal;
+  src: url("/.assets/spot/regular.woff2");
+}
+
+@font-face {
+  font-family: spot;
+  font-weight: bold;
+  src: url("/.assets/spot/bold.woff2");
+}

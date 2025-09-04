@@ -1,0 +1,220 @@
+/* @include ../.assets/bryant/manifest.css     */
+/* @include ../.assets/bryant-alt/manifest.css */
+/* @include ../.assets/concourse/manifest.css  */
+/* @include ../.assets/spot/manifest.css       */
+
+:root {
+  --black: #0A1215;
+  --blue: #2463EB;
+
+  color: var(--black);
+
+  font: 16px/1.33 bryant, sans-serif;
+
+  @media (min-width: 48rem) { font-size: 17px; }
+  @media (min-width: 51rem) { font-size: 18px; }
+  @media (min-width: 54rem) { font-size: 19px; }
+  @media (min-width: 57rem) { font-size: 20px; }
+  @media (min-width: 60rem) { font-size: 21px; }
+  @media (min-width: 63rem) { font-size: 22px; }
+  @media (min-width: 66rem) { font-size: 23px; }
+  @media (min-width: 69rem) { font-size: 24px; }
+  @media (min-width: 72rem) { font-size: 25px; }
+}
+
+::selection { background-color: #E0EEFC; }
+
+a {
+  box-shadow: inset 0 -2px 0 var(--blue);
+  color: var(--blue);
+  font-weight: 500;
+  text-decoration: none;
+  transition: box-shadow .2s;
+
+  &:hover {
+    box-shadow: inset 0 -1em 0 color(from var(--blue) srgb r g b / .1);
+  }
+}
+
+article {
+  margin: auto;
+  padding: 0 1rem;
+  width: 30rem;
+}
+
+blockquote {
+  background-color: #e9e4fe;
+  margin: 0 0 0 -1rem;
+  padding: .5rem 1rem;
+  width: 100%;
+
+  p {
+    color: darkslateblue;
+    font-family: bryant-alt, sans-serif;
+    font-weight: bold;
+    font-size: .8rem;
+    margin: 0;
+  }
+
+  & + pre {
+    background-color: #F6F3FE;
+    padding-top: .5rem;
+
+    code {
+      background-color: inherit;
+      color: indigo;
+    }
+  }
+}
+
+body {
+  margin: 0;
+}
+
+code {
+  background-color: #F6F3FE;
+  color: darkslateblue;
+  font-family: spot, monospace;
+  font-size: .86rem;
+  letter-spacing: -.02rem;
+}
+
+footer {
+  padding: 2rem 0 3rem 0;
+  text-align: center;
+
+  a {
+    background-color: #FCDF46;
+    box-shadow: 1px 1px 1px silver;
+    color: var(--black);
+    display: inline-block;
+    font-family: bryant-alt, sans-serif;
+    font-size: .9rem;
+    margin-left: -.5rem;
+    padding: 0 .5rem;
+    position: relative;
+    transition: transform .1s ease-in-out;
+    z-index: 2;
+
+    &:hover {
+      box-shadow: 1px 1px 1px silver;
+      transform: scale(1.05);
+    }
+  }
+}
+
+h1, h2, h3 {
+  font-family: concourse, sans-serif;
+  margin: 1em 0 1rem 0;
+}
+
+h1 {
+  color: black;
+  font-size: 5rem;
+  font-weight: 700;
+  margin: 0 -.5rem 1rem -.5rem;
+
+  + p {
+    font-family: bryant-alt, sans-serif;
+    font-size: 1.25rem;
+    margin: -1rem -.5rem 1rem -.5rem;
+
+    + p {
+      color: dimgray;
+      font-size: .8rem;
+      margin-bottom: 1.5rem;
+
+      a {
+        background-color: firebrick;
+        border: 1px solid maroon;
+        border-radius: 1.5rem;
+        box-shadow: none;
+        color: white;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: bold;
+        line-height: 1rem;
+        margin-right: .2rem;
+        padding: .5rem 1rem;
+        text-decoration: none;
+        transition: transform .1s ease-in-out;
+
+        &:hover {
+          box-shadow: none;
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+}
+
+h2 {
+  color: darkred;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1rem;
+
+  &:before {
+    color: darkred;
+    content: '→';
+    display: inline-block;
+    margin-left: -1rem;
+    text-align: center;
+    width: 1rem;
+  }
+
+  @media (max-width: 32rem) { &:before { content: ""; }}
+}
+
+header {
+  font-family: bryant-alt, sans-serif;
+  font-size: .8rem;
+  padding: 1rem;
+  text-align: right;
+
+  a:nth-child(1) {
+    box-shadow: none;
+    float: left;
+
+    &:hover {
+      &:after {
+        color: var(--black);
+        content: " We Ship Software";
+      }
+    }
+  }
+}
+
+p {
+  margin: 0 0 1rem 0;
+}
+
+pre {
+  background-color: var(--black);
+  color: white;
+  margin: 0 0 1rem -1rem;
+  overflow-x: scroll;
+  padding: 1rem;
+  width: 100%;
+
+  code {
+    display: block;
+    font-size: .8rem;
+
+    &.language-shell {
+      background-color: var(--black);
+      color: silver;
+
+      &::first-line {
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+
+  & + blockquote {margin-top: -1rem;}
+}
