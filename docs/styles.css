@@ -131,6 +131,7 @@
 :root {
   --black: #0A1215;
   --blue: #2463EB;
+  --yellow: #FCDF46;
 
   color: var(--black);
 
@@ -157,7 +158,8 @@ a {
   transition: box-shadow .2s;
 
   &:hover {
-    box-shadow: inset 0 -1em 0 color(from var(--blue) srgb r g b / .1);
+    box-shadow: inset 0 -1.33em 0 var(--yellow);
+    color: var(--black);
   }
 }
 
@@ -193,6 +195,7 @@ blockquote {
 }
 
 body {
+  border-top: .2rem solid var(--black);
   margin: 0;
 }
 
@@ -209,7 +212,7 @@ footer {
   text-align: center;
 
   a {
-    background-color: #FCDF46;
+    background-color: var(--yellow);
     box-shadow: 1px 1px 1px silver;
     color: var(--black);
     display: inline-block;
@@ -266,6 +269,7 @@ h1 {
 
         &:hover {
           box-shadow: none;
+          color: white;
           transform: scale(1.05);
         }
       }
@@ -314,9 +318,7 @@ header {
   }
 }
 
-p {
-  margin: 0 0 1rem 0;
-}
+p { margin: 0 0 1rem 0; }
 
 pre {
   background-color: var(--black);
@@ -341,5 +343,5 @@ pre {
     }
   }
 
-  & + blockquote {margin-top: -1rem;}
+  & + blockquote { margin-top: -1rem; }
 }
