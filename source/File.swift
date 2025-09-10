@@ -40,7 +40,7 @@ struct File {
     var context = context
       .merging(try source.metadata, uniquingKeysWith: { (x, _) in x })
 
-    if let template = try source.template {
+    if let layout = context["@layout"], let template = Self.find(layout) {
       (text, context) = try Layout(template: template, context: context)
         .render(text) }
     for fragment in text.comments(Include.pattern) {
